@@ -11,14 +11,12 @@ const headers: AxiosRequestHeaders = {
 export async function login({ username, password }: { username: string; password: string }) {
   // 获取cookie
   const res1 = await axios.get(url_1)
-  const cookie1 = res1.headers['set-cookie']![0]
-  headers.cookie = cookie1
+  headers.cookie = res1.headers['set-cookie']![0]
 
-  const requestHeaders = headers
-  const res2 = await axios.get(url_2, { headers: requestHeaders })
-  const cookies2 = res2.headers['set-cookie'] as string[]
-  cookies2.forEach((cookie) => {
-    headers.cookie += `${cookie};`
+  const res2 = await axios.get(url_2, { headers })
+  const cookies1 = res2.headers['set-cookie'] as string[]
+  cookies1.forEach((cookie) => {
+    headers.cookie += cookie
   })
   // 验证账号密码
   const res3 = await axios.get(url_3, { headers, params: { username, password } })
