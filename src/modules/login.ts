@@ -30,7 +30,7 @@ function getCookie(cname: string) {
   return ''
 }
 
-function encryptionPwd(pwd: string) {
+export function encryptionPwd(pwd: string) {
   let secretKey = getCookie('LOGIN_FLAVORING')
   let key = CryptoJS.enc.Utf8.parse(secretKey)
   let password = CryptoJS.enc.Utf8.parse(pwd)
