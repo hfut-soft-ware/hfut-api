@@ -19,7 +19,7 @@ function encryptionPwd(pwd: string) {
 app.listen(config.server.port, () => {
   console.log(`Server is running on port ${config.server.port}`)
   loginVpn()
-  console.log(encryptionPwd('Ai200212243614'))
+  console.log(encryptionPwd(''))
 })
 
 app.get('/login', async(req, res) => {

@@ -33,7 +33,7 @@ export async function loginVpn() {
   await instance.get(url3, { headers, params: { _: time } })
   const res4 = await instance.get(url4, { headers, params: { vpn_timestamp: time } })
   const key = res4.data.split('; ')[1].split('=')[1]
-  const pwd = encryptionPwd('Ai200212243614', key)
+  const pwd = encryptionPwd('', key)
   const url5 = `https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421f3f652d22f367d44300d8db9d6562d/cas/policy/checkUserIdenty?vpn-12-o1-cas.hfut.edu.cn=&username=2021217986&password=${pwd}&_=${time}`
   const res5 = await instance.get(url5, { headers })
 
