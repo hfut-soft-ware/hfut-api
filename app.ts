@@ -1,6 +1,7 @@
 import express from 'express'
 import config from './src/config/config'
 import { login } from './src/modules/login'
+import { dormitoryInspection } from './src/modules/dormitoryInspection'
 
 const app = express()
 
@@ -25,5 +26,24 @@ app.get('/login', async(req, res) => {
     code: 1,
     msg: '登录成功',
     data: result,
+  })
+})
+
+app.get('/dormitory', async(req, res) => {
+  const query = req.query
+  if (!query.code) {
+    res.send({
+      code: -1,
+      msg: '请输入宿舍号',
+    })
+    return
+  }
+
+  const data = await dormitoryInspection({ studentCode: query.code as string })
+
+  res.send({
+    code: 1,
+    msg: '',
+    data,
   })
 })
