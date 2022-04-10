@@ -26,6 +26,7 @@ module.exports = {
       "@typescript-eslint/no-use-before-define": "off",
       "@typescript-eslint/brace-style": "off",
       "@typescript-eslint/consistent-type-imports": "off",
+      "@typescript-eslint/no-var-requires": "off",
     }
   }]
 };

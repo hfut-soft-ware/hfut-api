@@ -24,7 +24,7 @@ function encryptionPwd(pwd: string, salt: string) {
   return encryptedPwd
 }
 
-export async function loginVpn() {
+export default async function loginVpn() {
   const time = Date.now()
 
   const res1 = await instance.get(url1, { headers })
