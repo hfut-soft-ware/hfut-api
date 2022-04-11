@@ -1,6 +1,5 @@
 import axios from 'axios'
 import * as cheerio from 'cheerio'
-import * as htmlparser2 from 'htmlparser2'
 
 const url = 'http://39.106.82.121/query/getStudentScore'
 
