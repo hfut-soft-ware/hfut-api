@@ -21,13 +21,12 @@ export default function request(options: IRequest): AxiosPromise {
       headers.cookie = options.cookie
     }
 
-    const config = { method: 'get', ...(options.config), headers } as AxiosRequestConfig
+    const config = { method: 'get', headers, maxRedirects: 0, ...(options.config) } as AxiosRequestConfig
 
     axios(config).then((res) => {
       resolve(res)
     }).catch((err) => {
       reject(err)
-      console.log(err)
     })
   })
 }
