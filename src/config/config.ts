@@ -1,6 +1,6 @@
 const config = {
   server: {
-    port: 8082,
+    port: 8081,
   },
 }
 
