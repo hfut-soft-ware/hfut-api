@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import { Express } from 'express'
+import { isLogin } from './modules/login'
 
 export function getRoute(filename: string) {
   const parsedRoute = filename.split('_')
@@ -40,7 +41,22 @@ async function setupRoute(app: Express) {
 
   modules.forEach((item) => {
     app.get(item.route, (req, res) => {
-      item.module(req, res)
+      const cookie = req.headers.cookie
+      isLogin(cookie).then((response) => {
+        if (response) {
+          item.module(req, res, cookie)
+          return
+        } else {
+          if (item.route === '/login') {
+            item.module(req, res, cookie)
+          } else {
+            res.status(401).send({
+              msg: '请登录后查看',
+              code: 401,
+            })
+          }
+        }
+      })
     })
   })
 }
@@ -70,10 +86,6 @@ function setupServerConfig(app: Express) {
 }
 
 export async function setupServer(app: Express) {
-  try {
-    setupServerConfig(app)
-    await setupRoute(app)
-  } catch (err) {
-    console.log(err)
-  }
+  setupServerConfig(app)
+  await setupRoute(app)
 }
