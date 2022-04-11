@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import { Express } from 'express'
 import { isLogin } from './modules/login'
+import { ModulesRequest, ModulesResponse } from './shared/types'
 
 export function getRoute(filename: string) {
   const parsedRoute = filename.split('_')
@@ -36,25 +37,45 @@ async function getModules() {
   return modules
 }
 
+export interface IQuery {
+  req: ModulesRequest
+  res: ModulesResponse
+  cookie: string
+}
+
 async function setupRoute(app: Express) {
   const modules = await getModules()
 
   modules.forEach((item) => {
     app.get(item.route, (req, res) => {
-      const cookie = req.headers.cookie
-      isLogin(cookie).then((response) => {
-        if (response) {
-          item.module(req, res, cookie)
-          return
-        } else {
-          if (item.route === '/login') {
-            item.module(req, res, cookie)
-          } else {
-            res.status(401).send({
-              msg: '请登录后查看',
-              code: 401,
-            })
+      const cookie = req.headers.cookie as string
+      const query: IQuery = {
+        req,
+        res,
+        cookie,
+      }
+
+      isLogin(cookie).then(async(response) => {
+        if (response || item.route === '/login') {
+          try {
+            const moduleResponse = await item.module(query)
+            const cookie = moduleResponse?.cookie
+            if (cookie) {
+              res.setHeader('Set-Cookie', cookie)
+              delete moduleResponse.cookie
+            }
+
+            res.status(moduleResponse.code || moduleResponse.status).send(moduleResponse.body || moduleResponse)
+            console.log(`[OK] ${req.originalUrl}`)
+          } catch (err: any) {
+            console.log(`[ERR] ${err} at ${err.stack}`)
+            res.status(err.status || 502).send(err.body)
           }
+        } else {
+          res.status(401).send({
+            msg: '请登录后查看',
+            code: 401,
+          })
         }
       })
     })
@@ -82,6 +103,7 @@ function setupServerConfig(app: Express) {
   app.use((err, req, res, next) => {
     console.error(err.stack)
     res.status(500).send({ code: 500, msg: '服务器错误' })
+    next()
   })
 }
 
