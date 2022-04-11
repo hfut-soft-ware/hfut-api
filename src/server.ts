@@ -9,7 +9,7 @@ export function getRoute(filename: string) {
   }
 
   parsedRoute.splice(1).forEach((item) => {
-    route += `${item[0].toUpperCase()}${item.slice(1)}`
+    route += `/${item}`
   })
 
   return route
