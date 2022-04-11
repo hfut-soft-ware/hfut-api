@@ -19,7 +19,7 @@ function encryptionPwd(pwd: string, salt: string) {
   return encryptedPwd
 }
 
-export default async function login(req: ModulesRequest, res: ModulesResponse) {
+export default async function login(req: ModulesRequest, res: ModulesResponse, ...args: any[]) {
   const username = req.query.username as string
   const password = req.query.password as string
 
@@ -28,12 +28,19 @@ export default async function login(req: ModulesRequest, res: ModulesResponse) {
     return
   }
   const now = Date.now()
-  const res1 = await request({ config: { url: url1 } })
-  const cookie1 = getCookie(res1.headers['set-cookie'] as string[])
+  const res1 = await request({ config: { url: url1 } }, true)
+
+  let cookie1 = getCookie(res1.headers['set-cookie'] as string[])
+
+  if (!cookie1) {
+    res.send({ msg: '登录太过频繁，请稍后再试', code: -1 })
+    return
+  }
 
   await request({ config: { url: url2, params: { _: now }, maxRedirects: 5 }, cookie: cookie1 })
   await request({ config: { url: url3 } })
   const res4 = await request({ config: { url: url4 } })
+
   // 加密密码
   const saltKey = (res4.data as string).split('; ')[1].split('=').pop() as string
   const encryptedPwd = encryptionPwd(password, saltKey)
@@ -45,6 +52,7 @@ export default async function login(req: ModulesRequest, res: ModulesResponse) {
 
   if (!authFlag) {
     res.status(400).send({ code: 400, msg: '用户名或密码错误' })
+    return
   }
 
   const redirectRes = await request({
@@ -96,14 +104,31 @@ export default async function login(req: ModulesRequest, res: ModulesResponse) {
 
   // 登录教务
   const eamUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421f3f652d22f367d44300d8db9d6562d/cas/login?service=http://jxglstu.hfut.edu.cn/eams5-student/neusoft-sso/login'
-  await request({ config: { url: eamUrl, maxRedirects: 5 } })
+  await request({ config: { url: eamUrl, maxRedirects: 5 } }, true)
 
   // 感兴趣的可以执行一下下面的逻辑，会输出你个人的信息
   // const studentInfo = await request({ config: { url: 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/student/home-page/students?vpn-12-o1-jxglstu.hfut.edu.cn' } })
   // console.log(studentInfo.data)
-  res.send({
+
+  const cookie = cookie1.replace('; Path=/; Domain=webvpn.hfut.edu.cn; HttpOnly', '').split('=')
+
+  res.cookie(cookie[0], cookie[1]).send({
     code: 200,
     msg: '登录成功',
-    cookie: cookie1,
+    data: {
+      token,
+    },
   })
+}
+
+export async function isLogin(cookie?: string) {
+  if (!cookie) {
+    return
+  }
+  try {
+    await request({ config: { url: url1 }, cookie }, true)
+    return false
+  } catch (err) {
+    return (err as AxiosError).response!.status === 302
+  }
 }
