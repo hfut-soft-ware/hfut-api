@@ -156,12 +156,5 @@ export async function getOneToken(cookie?: string) {
   const tokenRes = await request(tokenUrl, { params: { code } }, cookie)
   const token = tokenRes.body?.data?.access_token
 
-  try {
-    const test = 'https://webvpn.hfut.edu.cn/https/77726476706e69737468656265737421fff944d22f367d44300d8db9d6562d/api/center/user/selectUserInfoForHall?vpn-12-o2-one.hfut.edu.cn'
-    const res = await request(test, { headers: { authorization: `Bearer ${token}` } }, cookie)
-    console.log(res.body)
-  } catch (err) {
-    console.log((err as any).config.headers)
-  }
   return token
 }
