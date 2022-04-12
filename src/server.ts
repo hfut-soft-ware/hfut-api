@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { Express } from 'express'
 import { isLogin } from './modules/login'
 import { ModulesRequest, ModulesResponse } from './shared/types'
+import cardMiddleware from './middleware/card'
 
 export function getRoute(filename: string) {
   const parsedRoute = filename.split('_')
@@ -58,6 +59,9 @@ async function setupRoute(app: Express) {
       isLogin(cookie).then(async(response) => {
         if (response || item.route === '/login') {
           try {
+            if (item.route.startsWith('/card')) {
+              await cardMiddleware(query.cookie)
+            }
             const moduleResponse = await item.module(query)
             const cookie = moduleResponse?.cookie
             if (cookie) {
