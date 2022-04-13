@@ -50,20 +50,29 @@ export default async function login(query: IQuery) {
   const authFlagUrl = `https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421f3f652d22f367d44300d8db9d6562d/cas/policy/checkUserIdenty?vpn-12-o1-cas.hfut.edu.cn=&username=${username}&password=${encryptedPwd}&_=${now}`
   await request(authFlagUrl, {}, cookie1)
 
-  const redirectRes = await request(url5, {
-    url: url5,
-    maxRedirects: 5,
-    params: {
-      username: '2021217986',
-      capcha: '',
-      execution: 'e1s1',
-      _eventId: 'submit',
-      password: encryptedPwd,
-      geolocation: '',
-    },
-  }, cookie1)
+  let redirectRes: any = { body: '' }
+  try {
+    redirectRes = await request(url5, {
+      url: url5,
+      maxRedirects: 5,
+      params: {
+        username: '2021217986',
+        capcha: '',
+        execution: 'e1s1',
+        _eventId: 'submit',
+        password: encryptedPwd,
+        geolocation: '',
+      },
+    }, cookie1)
+  } catch (err) {
+    redirectRes.body = (err as AxiosError).response!.data
+  }
 
   const $ = cheerio.load(redirectRes.body)
+
+  if ($('.alert-danger').children('span').text().trim() === '该账户已被冻结' || $('#errorpassword').text().length !== 0) {
+    return { code: 400, msg: '该账户已被冻结' }
+  }
   // 到这就算是成功登进了webvpn，但还没进信息门户
   const isSuccess = $('.layui-show-sm-inline-block').text().trim() === '合肥工业大学WEBVPN系统'
 
