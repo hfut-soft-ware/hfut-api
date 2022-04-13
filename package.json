@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.ts"
+    "dev": "./node_modules/.bin/nodemon app.ts",
+    "prd": "pm2 start app.ts",
   },
   "author": "",
   "license": "ISC",
