@@ -56,7 +56,7 @@ export default async function login(query: IQuery) {
       url: url5,
       maxRedirects: 5,
       params: {
-        username: '2021217986',
+        username,
         capcha: '',
         execution: 'e1s1',
         _eventId: 'submit',
@@ -70,14 +70,14 @@ export default async function login(query: IQuery) {
 
   const $ = cheerio.load(redirectRes.body)
 
-  if ($('.alert-danger').children('span').text().trim() === '该账户已被冻结' || $('#errorpassword').text().length !== 0) {
+  if ($('.alert-danger').children('span').text().trim().includes('该账户已被冻结')) {
     return { code: 400, msg: '该账户已被冻结' }
   }
   // 到这就算是成功登进了webvpn，但还没进信息门户
   const isSuccess = $('.layui-show-sm-inline-block').text().trim() === '合肥工业大学WEBVPN系统'
 
   if (!isSuccess) {
-    return { code: 400, msg: '登录失败' }
+    return { code: 400, msg: '密码错误' }
   }
   // 信息门户
   const oneToken = await getOneToken(cookie1.replace('; Path=/; Domain=webvpn.hfut.edu.cn; HttpOnly', ''))
