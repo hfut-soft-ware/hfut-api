@@ -74,7 +74,7 @@ export default async function login(query: IQuery) {
     return { code: 400, msg: '该账户已被冻结' }
   }
   // 到这就算是成功登进了webvpn，但还没进信息门户
-  const isSuccess = $('.layui-show-sm-inline-block').text().trim() === '合肥工业大学WEBVPN系统'
+  const isSuccess = $('.wrdvpn-navbar__title').text().trim() === '合肥工业大学WEBVPN系统'
 
   if (!isSuccess) {
     return { code: 400, msg: '密码错误' }
