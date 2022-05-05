@@ -73,8 +73,8 @@ async function setupRoute(app: Express) {
             console.log(`[OK] ${req.originalUrl}`)
           } catch (err: any) {
             console.log(`[ERR] ${err} at ${err.stack}`)
-            res.status(400).send({
-              code: 400,
+            res.status(500).send({
+              code: 500,
               msg: '服务器错误',
             })
           }
