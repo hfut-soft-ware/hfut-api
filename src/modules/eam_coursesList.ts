@@ -25,7 +25,9 @@ export default async function(query: IQuery) {
 
   return {
     code: 200,
-    ...(lessonList.body.result),
-    lessons: courseIdsRes.body.lessons,
+    data: {
+      ...(lessonList.body.result),
+      lessons: courseIdsRes.body.lessons,
+    },
   }
 }
