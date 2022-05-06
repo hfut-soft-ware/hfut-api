@@ -26,9 +26,9 @@ function parseScore(html: string) {
           name: list[0],
           lessonId: list[1],
           teachingClassId: list[2],
-          credit: list[3],
-          gpa: list[4],
-          score: list[5],
+          credit: parseFloat(list[3]),
+          gpa: parseFloat(list[4]),
+          score: parseFloat(list[5]),
           detail: transformDetailScore(list[6]),
         }
       }).toArray()
