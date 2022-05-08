@@ -34,7 +34,7 @@ export default async function login(query: IQuery) {
   let cookie1 = getCookie(res1.cookie as string[])
 
   if (!cookie1) {
-    res.send({ msg: '登录太过频繁，请稍后再试', code: 502 })
+    res.send({ msg: '登录太过频繁，请稍后再试', code: 400 })
     return
   }
 
@@ -77,7 +77,7 @@ export default async function login(query: IQuery) {
   const isSuccess = $('.wrdvpn-navbar__title').text().trim() === '合肥工业大学WEBVPN系统'
 
   if (!isSuccess) {
-    return { code: 400, msg: '密码错误' }
+    return { code: 400, msg: '账号或密码错误' }
   }
   // 信息门户
   const oneToken = await getOneToken(cookie1.replace('; Path=/; Domain=webvpn.hfut.edu.cn; HttpOnly', ''))
