@@ -8,7 +8,6 @@
 npm run dev
 ```
 
-[在线文档](https://subtle-gelato-f0e9b5.netlify.app/#/)
-[文档仓库](https://github.com/hfut-soft-ware/hfut-api-doc)
+[在线文档](https://console-docs.apipost.cn/preview/c82174e195653c83/495a03eb6e9b8d79)
 
 
