@@ -72,6 +72,7 @@ export default async function(query: IQuery) {
   })
   return {
     code: 200,
+    msg: '获取课表成功',
     data: {
       lessonList,
       lessons,

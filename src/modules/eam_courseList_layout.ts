@@ -11,10 +11,16 @@ export default function(query: IQuery) {
       msg: '课表布局id不能为空',
     }
   }
-  return request(url, {
+  const res = request(url, {
     method: 'POST',
     data: {
       timeTableLayoutId: id,
     },
   }, query.cookie)
+
+  return {
+    code: 200,
+    msg: '获取课表布局成功',
+    data: res,
+  }
 }

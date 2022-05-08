@@ -41,8 +41,11 @@ export default async function(query: IQuery) {
   const detailDoms = $('.col-sm-8').children('.info-page')
 
   return {
-    baseInfo: baseInfo.toArray(),
-    detailInfo: parseDetail(detailDoms),
+    msg: '获取学籍信息成功',
+    data: {
+      baseInfo: baseInfo.toArray(),
+      detailInfo: parseDetail(detailDoms),
+    },
     code: 200,
   }
 }

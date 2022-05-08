@@ -19,5 +19,11 @@ export default async function(query: IQuery) {
   }
 
   const dataUrl = `https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/lesson-survey/${id}/search/${studentCode}?vpn-12-o1-jxglstu.hfut.edu.cn`
-  return request(dataUrl, {}, query.cookie)
+  const res = request(dataUrl, {}, query.cookie)
+
+  return {
+    code: 200,
+    msg: '获取评教信息成功',
+    data: res,
+  }
 }
