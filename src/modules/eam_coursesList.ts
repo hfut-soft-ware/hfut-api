@@ -31,51 +31,40 @@ export default async function(query: IQuery) {
     return res
   }
 
+  const getSchedule = (data: any[]) =>
+    data.map((item: any) => ({
+      startTime: item.startTime,
+      endTime: item.endTime,
+      id: item.lessonId,
+      room: item.room.nameZh,
+      weekday: item.weekday,
+      weekIndex: item.weekIndex,
+    }))
+
   const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
   const res = await request(allCoursesListUrl, {
     method: 'post',
     data: { lessonIds: ids, studentId, weekIndex: '' },
   }, query.cookie)
 
-  const getLessonRoom = (id: string) => {
-    let room = ''
-    res.body.result.scheduleList.forEach((lesson: any) => {
-      if (lesson.lessonId === id) {
-        room = lesson.room.nameZh
-      }
-    })
-
-    return room
-  }
-
-  const lessonList = res.body.result.lessonList.map((item: any) => ({
-    id: item.id,
-    code: item.code,
-    adminClasses: item.name,
-    name: item.coureName,
-    type: item.courseTypeName,
-    teachers: item.teacherAssignmentList.map((item: any) => item.name),
-    studentCount: item.stdCount,
-    room: getLessonRoom(item.id),
-    ...getCredits(item.id),
-  }))
-
-  const lessons = Array.from({ length: 20 }, () => Array.from({ length: 7 }, () => []))
-
-  res.body.result.scheduleList.forEach((item: any) => {
-    const idx = item.weekIndex as number
-    (lessons[idx - 1][item.weekday - 1] as any[]).push({
-      startTime: item.startTime,
-      endTime: item.endTime,
-      id: item.lessonId,
-    })
+  const lessonList = res.body.result.lessonList.map((item: any) => {
+    return {
+      id: item.id,
+      code: item.code,
+      adminClasses: item.name,
+      name: item.courseName,
+      type: item.courseTypeName,
+      teachers: item.teacherAssignmentList.map((item: any) => item.name),
+      studentCount: item.stdCount,
+      weeks: `${item.suggestScheduleWeekInfo ? `${item.suggestScheduleWeekInfo}周` : ''}`,
+      ...getCredits(item.id),
+      schedule: getSchedule(res.body.result.scheduleList.filter((list: any) => list.lessonId === item.id)),
+    }
   })
+
   return {
     code: 200,
     msg: '获取课表成功',
-    data: {
-      lessonList,
-      lessons,
-    },
+    data: lessonList,
   }
 }
