@@ -8,6 +8,6 @@
 npm run dev
 ```
 
-[在线文档](https://console-docs.apipost.cn/preview/c82174e195653c83/495a03eb6e9b8d79)
+[在线文档](https://console-docs.apipost.cn/preview/2aad6395bc04d25d/0a09c9f2be4c7f39)
 
 
