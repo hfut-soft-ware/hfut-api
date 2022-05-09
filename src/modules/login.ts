@@ -97,6 +97,7 @@ export default async function login(query: IQuery) {
     msg: '登录成功',
     cookie,
     data: {
+      cookie,
       oneToken,
     },
   }
