@@ -32,14 +32,14 @@ export default async function(query: IQuery) {
   }
 
   const getSchedule = (data: any[]) =>
-    data.map((item: any) => ({
+    Array(...new Set(data.map((item: any) => ({
       startTime: item.startTime,
       endTime: item.endTime,
       id: item.lessonId,
       room: item.room.nameZh,
       weekday: item.weekday,
       weekIndex: item.weekIndex,
-    }))
+    }))))
 
   const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
   const res = await request(allCoursesListUrl, {
