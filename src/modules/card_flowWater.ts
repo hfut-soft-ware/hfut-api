@@ -167,7 +167,7 @@ export default async function(query: IQuery) {
 
   return {
     code: 200,
-    msg: '一卡通流水信息',
+    msg: '获取一卡通流水信息成功',
     data,
   }
 }
