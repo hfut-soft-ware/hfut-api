@@ -13,14 +13,36 @@ export default async function(query: IQuery) {
     studentId = (err as AxiosError).response!.headers.location.replace('/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table/info/', '')
   }
 
-  const courseUrl = `https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table/get-data?vpn-12-o1-jxglstu.hfut.edu.cn&bizTypeId=23&semesterId=174&dataId=${studentId}`
-  const courseIdsRes = await request(courseUrl, {}, query.cookie)
+  /**
+   *
+   * 关于bizTypeId合肥校区是2, 宣城校区是23
+   *
+   */
+
+  const idsParams = {
+    bizTypeId: 2,
+    semesterId: 174,
+    dataId: studentId,
+  }
+
+  let courseUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table/get-data?vpn-12-o1-jxglstu.hfut.edu.cn'
+  let courseIdsRes = await request(courseUrl, {
+    params: idsParams,
+  }, query.cookie)
+
+  if (courseIdsRes.body?.lessonIds?.length === 0) {
+    idsParams.bizTypeId = 23
+    courseIdsRes = await request(courseUrl, {
+      params: idsParams,
+    }, query.cookie)
+  }
   const ids = courseIdsRes.body.lessonIds
 
   const getCredits = (id: string) => {
     let res = { credits: 0, examMode: '' }
     Object.keys(courseIdsRes.body.lessons).forEach((key) => {
       const lesson = courseIdsRes.body.lessons[key]
+
       if (lesson.id === id) {
         res.credits = lesson.course.credits
 
@@ -36,16 +58,22 @@ export default async function(query: IQuery) {
       startTime: item.startTime,
       endTime: item.endTime,
       id: item.lessonId,
-      room: item.room.nameZh,
+      room: item.room?.nameZh,
       weekday: item.weekday,
       weekIndex: item.weekIndex,
     }))))
 
-  const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
-  const res = await request(allCoursesListUrl, {
-    method: 'post',
-    data: { lessonIds: ids, studentId, weekIndex: '' },
-  }, query.cookie)
+  let res = {} as any
+
+  try {
+    const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
+    res = await request(allCoursesListUrl, {
+      method: 'post',
+      data: { lessonIds: ids, studentId, weekIndex: '' },
+    }, query.cookie)
+  } catch (err) {
+    return { code: 500, msg: '服务器错误' }
+  }
 
   const lessonList = res.body.result.lessonList.map((item: any) => {
     return {
