@@ -10,16 +10,6 @@ const url2 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1
 const url3 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accounthisTrjn3.action'
 const url4 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accountconsubBrows.action'
 
-function removeSpace(str: string): string {
-  let o = ''
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] !== ' ') {
-      o += str[i]
-    }
-  }
-  return o
-}
-
 function parserFlowWater(data: string): object {
   let consumerList = []
 
@@ -35,17 +25,11 @@ function parserFlowWater(data: string): object {
       break
     }
 
-    // 学号
-    const studentCode = $(`#tables tbody tr:nth-child(${i}) td:nth-child(2)`).text().trim()
-
-    // 姓名
-    const username = removeSpace($(`#tables tbody tr:nth-child(${i}) td:nth-child(3)`).text().trim())
-
     // 交易类型
     const consumerType = $(`#tables tbody tr:nth-child(${i}) td:nth-child(4)`).text().trim()
 
     // 商户名称
-    const merchantName = removeSpace($(`#tables tbody tr:nth-child(${i}) td:nth-child(5)`).text().trim())
+    const merchantName = $(`#tables tbody tr:nth-child(${i}) td:nth-child(5)`).text().trim().replace(' ', '')
 
     // 交易额
     const amount = $(`#tables tbody tr:nth-child(${i}) td:nth-child(6)`).text().trim()
@@ -60,12 +44,10 @@ function parserFlowWater(data: string): object {
     const status = $(`#tables tbody tr:nth-child(${i}) td:nth-child(9)`).text().trim()
 
     // 说明
-    const desc = removeSpace($(`#tables tbody tr:nth-child(${i}) td:nth-child(10)`).text().trim())
+    const desc = $(`#tables tbody tr:nth-child(${i}) td:nth-child(10)`).text().trim().replace(' ', '')
 
     consumerList.push({
       time,
-      studentCode,
-      username,
       consumerType,
       merchantName,
       amount,
@@ -74,10 +56,14 @@ function parserFlowWater(data: string): object {
       status,
       desc,
     })
-
     i++
   }
 
+  // 学号
+  const studentCode = $('#tables tbody tr:nth-child(2) td:nth-child(2)').text().trim()
+
+  // 姓名
+  const username = $('#tables tbody tr:nth-child(2) td:nth-child(3)').text().trim().replace(' ', '')
   // 其他信息
   const info = $('#tables tbody tr:nth-last-child(1) td').text()
   let match = `${info.match('共[0-9]+页')}`
@@ -92,6 +78,8 @@ function parserFlowWater(data: string): object {
 
   return {
     list: consumerList,
+    studentCode,
+    username,
     pageNum,
     count,
     grossAmount,
