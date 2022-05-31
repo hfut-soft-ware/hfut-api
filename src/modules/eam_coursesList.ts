@@ -63,17 +63,11 @@ export default async function(query: IQuery) {
       weekIndex: item.weekIndex,
     }))))
 
-  let res = {} as any
-
-  try {
-    const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
-    res = await request(allCoursesListUrl, {
-      method: 'post',
-      data: { lessonIds: ids, studentId, weekIndex: '' },
-    }, query.cookie)
-  } catch (err) {
-    return { code: 500, msg: '服务器错误' }
-  }
+  const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
+  const res = await request(allCoursesListUrl, {
+    method: 'post',
+    data: { lessonIds: ids, studentId, weekIndex: '' },
+  }, query.cookie)
 
   const lessonList = res.body.result.lessonList.map((item: any) => {
     return {
