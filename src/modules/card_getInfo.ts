@@ -5,16 +5,6 @@ import request from '../shared/request'
 
 const url = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accountcardUser.action'
 
-// function removeSpace(str: string): string {
-//   let result = ''
-//   for (let i = 0; i < str.length; i++) {
-//     if (str[i] !== ' ') {
-//       result += str[i]
-//     }
-//   }
-//   return result
-// }
-
 function parser(data: string): object {
   const $ = cheerio.load(data)
   // 姓名
