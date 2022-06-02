@@ -20,9 +20,13 @@ function parseStudentInfo(body: string) {
     .map((index, el) => {
       return cheerio.load(el).text()
     })
+  // //*[@id="graduate-info"]/div/div[2]/div/dl/dd[2]/text()
+  const graduateDate = $('#graduate-info dl').children('dd')
+    .map((index, el) => {
+      return cheerio.load(el).text()
+    })[1]
 
   return {
-    data: 'data',
     studentId,
     usernameEn,
     usernameZh,
@@ -35,8 +39,10 @@ function parseStudentInfo(body: string) {
     major: info[6],
     class: info[8],
     campus: info[9],
+    status: info[10],
     length: info[18],
     enrollmentDate: info[19],
+    graduateDate,
   }
 }
 
