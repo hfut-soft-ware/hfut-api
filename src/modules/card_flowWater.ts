@@ -101,13 +101,6 @@ export default async function(query: IQuery) {
 
   const pageNum = parserPageNum(req.query.pageNum)
 
-  if (!startDate || !endDate) {
-    return {
-      code: 400,
-      msg: '开始时间或结束时间不为空不能为空',
-    }
-  }
-
   await request(url1, {
     method: 'POST',
     maxRedirects: 10,
