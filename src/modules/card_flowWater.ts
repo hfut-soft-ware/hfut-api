@@ -5,9 +5,12 @@ import iconv from 'iconv-lite'
 import { IQuery } from '../server'
 import request from '../shared/request'
 
-const url1 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accounthisTrjn1.action'
-const url2 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accounthisTrjn2.action'
-const url3 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accounthisTrjn3.action'
+const base_url = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8'
+
+const url0 = `${base_url}/accounthisTrjn.action`
+const url1 = `${base_url}/accounthisTrjn1.action`
+const url2 = `${base_url}/accounthisTrjn2.action`
+const url3 = `${base_url}/accounthisTrjn3.action`
 const url4 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accountconsubBrows.action'
 
 function parserFlowWater(data: string): object {
@@ -92,14 +95,30 @@ function parserPageNum(page: any): number {
   return pageNum >= 1 ? pageNum : 1
 }
 
+function parserAccount(body: string) {
+  const $ = cheerio.load(body)
+  const account = $('#account option').attr('value')
+
+  console.log(account)
+  return account
+}
+
 export default async function(query: IQuery) {
   const { req } = query
-  const account = req.query.account as string || '158092'
+
   const type = req.query.type as string || 'all'
   const startDate = req.query.startDate as string
   const endDate = req.query.endDate as string
 
   const pageNum = parserPageNum(req.query.pageNum)
+
+  const res0 = await request(url0, {
+    method: 'GET',
+    maxRedirects: 10,
+    responseType: 'arraybuffer',
+  }, query.cookie)
+
+  const account = parserAccount(iconv.decode(res0.body as Buffer, 'gbk') as string)
 
   await request(url1, {
     method: 'POST',
