@@ -74,7 +74,7 @@ export default async function(query: IQuery) {
       id: item.id,
       code: item.code,
       adminClasses: item.name,
-      name: item.courseName,
+      name: item.courseName.trim().replace(' ', ''),
       type: item.courseTypeName,
       teachers: item.teacherAssignmentList.map((item: any) => item.name),
       studentCount: item.stdCount,

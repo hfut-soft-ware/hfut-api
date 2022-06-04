@@ -14,7 +14,7 @@ function parseExamInfo(html: string) {
     const day = date[0]
 
     return {
-      name: info[0],
+      name: info[0].trim().replace(' ', ''),
       startTime: new Date(`${day} ${date[1].split('~')[0]}`).getTime(),
       endTime: new Date(`${day} ${date[1].split('~')[1]}`).getTime(),
       position: info[2],

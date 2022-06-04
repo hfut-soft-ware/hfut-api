@@ -11,7 +11,7 @@ const url0 = `${base_url}/accounthisTrjn.action`
 const url1 = `${base_url}/accounthisTrjn1.action`
 const url2 = `${base_url}/accounthisTrjn2.action`
 const url3 = `${base_url}/accounthisTrjn3.action`
-const url4 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421a1a013d2746126022a50c7fec8/accountconsubBrows.action'
+const url4 = `${base_url}/accountconsubBrows.action`
 
 function parserFlowWater(data: string): object {
   let consumerList = []
