@@ -62,11 +62,6 @@ function parserFlowWater(data: string): object {
     i++
   }
 
-  // 学号
-  const studentCode = $('#tables tbody tr:nth-child(2) td:nth-child(2)').text().trim()
-
-  // 姓名
-  const username = $('#tables tbody tr:nth-child(2) td:nth-child(3)').text().trim().replace(' ', '')
   // 其他信息
   const info = $('#tables tbody tr:nth-last-child(1) td').text()
   let match = `${info.match('共[0-9]+页')}`
@@ -81,8 +76,6 @@ function parserFlowWater(data: string): object {
 
   return {
     list: consumerList,
-    studentCode,
-    username,
     pageNum,
     count,
     grossAmount,
