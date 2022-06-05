@@ -21,15 +21,16 @@ function parseScore(html: string) {
 
           return $(td).html()
         }).toArray()
+        const detail = transformDetailScore(list[6])
 
         return {
           name: list[0],
           lessonId: list[1],
           teachingClassId: list[2],
-          credit: parseFloat(list[3]),
-          gpa: parseFloat(list[4]),
-          score: parseFloat(list[5]) || list[5],
-          detail: transformDetailScore(list[6]),
+          credit: detail.length ? list[3] : null,
+          gpa: detail.length ? list[4] : null,
+          score: detail.length ? list[5] : '未评教',
+          detail,
         }
       }).toArray()
       return {
