@@ -70,6 +70,8 @@ export default async function(query: IQuery) {
     code = uri[uri.length - 1]
   }
 
+  console.log(query.cookie)
+
   // 处理预科生
   if (!code.length) {
     const preStdPage = await request(url, {}, query.cookie)
@@ -77,7 +79,7 @@ export default async function(query: IQuery) {
   }
 
   const url1 = `${base_url}/eams5-student/for-std/student-info/info/${code}`
-  const res = await request(url1, {}, query.cookie)
+  const res = await request(url1, { maxRedirects: 1 }, query.cookie)
   const info = parseStudentInfo(res.body as string)
 
   return {
