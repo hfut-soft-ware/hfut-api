@@ -70,6 +70,9 @@ async function setupRoute(app: Express) {
             }
 
             res.status(moduleResponse.code || moduleResponse.status).send(moduleResponse.body || moduleResponse)
+            if (req.originalUrl.includes('login')) {
+              req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
+            }
             console.log(`[OK] ${req.originalUrl}`)
           } catch (err: any) {
             console.log(`[ERR] ${err} at ${err.stack}`)
