@@ -70,8 +70,6 @@ function parserFlowWater(data: string): object {
   match = `${info.match('当前第[0-9]+页')}`
   const index = parseInt(match.slice(3, match.length - 1))
 
-  console.log(info)
-
   const count = parseInt(`${(`${info.match('[0-9]+次交易')}`).match('[0-9]+')}`)
 
   const grossAmount = `${(`${info.match('额为:-?[0-9.]+')}`).match('-?[0-9.]+')}`

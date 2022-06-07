@@ -27,15 +27,13 @@ async function getModules() {
     console.log('An error occurred when read dir\n', err)
   })
 
-  const modules = files.filter(item => item.endsWith('.ts')).map((item) => {
+  return files.filter(item => item.endsWith('.ts')).map((item) => {
     const filename = item.replace('.ts', '')
     const module = require(`./modules/${filename}`).default
     const route = getRoute(filename)
 
     return { module, route }
   })
-
-  return modules
 }
 
 export interface IQuery {
@@ -56,6 +54,11 @@ async function setupRoute(app: Express) {
         cookie,
       }
 
+      let cookieValue = 'Not Exist Cookie'
+      if (cookie) {
+        cookieValue = cookie.slice(0, cookie.indexOf(';')).replace('wengine_vpn_ticketwebvpn_hfut_edu_cn=', '')
+      }
+
       isLogin(cookie).then(async(response) => {
         if (response || item.route === '/login') {
           try {
@@ -68,14 +71,13 @@ async function setupRoute(app: Express) {
               res.setHeader('Set-Cookie', cookie)
               delete moduleResponse.cookie
             }
-
             res.status(moduleResponse.code || moduleResponse.status).send(moduleResponse.body || moduleResponse)
             if (req.originalUrl.includes('login')) {
               req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
             }
-            console.log(`[OK] ${req.originalUrl}`)
+            console.log(`[OK] ${cookieValue} ${req.originalUrl}`)
           } catch (err: any) {
-            console.log(`[ERR] ${err} at ${err.stack}`)
+            console.log(`[ERR] ${cookieValue} ${err} at ${err.stack}`)
             res.status(500).send({
               code: 500,
               msg: '服务器错误',
