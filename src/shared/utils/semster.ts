@@ -5,9 +5,11 @@ export function getSemesterCode(semester: string) {
 }
 
 export function transformDetailScore(detail: string) {
+  if (detail.search('待评教') !== -1) {
+    return []
+  }
   return detail.split('<br>').map((item) => {
     const res = item.split(':')
-
     return {
       type: res[0],
       score: res[1],
