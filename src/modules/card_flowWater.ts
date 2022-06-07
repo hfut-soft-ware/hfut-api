@@ -90,10 +90,7 @@ function parserPageNum(page: any): number {
 
 function parserAccount(body: string) {
   const $ = cheerio.load(body)
-  const account = $('#account option').attr('value')
-
-  console.log(account)
-  return account
+  return $('#account option').attr('value')
 }
 
 export default async function(query: IQuery) {
