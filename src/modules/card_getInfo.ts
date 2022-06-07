@@ -1,4 +1,4 @@
-import cheerio from 'cheerio'
+import * as cheerio from 'cheerio'
 
 import { IQuery } from '../server'
 import request from '../shared/request'

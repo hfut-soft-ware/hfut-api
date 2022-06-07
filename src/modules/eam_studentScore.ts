@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import request from '../shared/request'
 import { IQuery } from '../server'
 import { getSemesterCode, transformDetailScore } from '../shared/utils/semster'
+import { parsePreStudentPage } from '../shared/utils/parsePreStudentPage'
 
 function parseScore(html: string) {
   const $ = cheerio.load(html)
@@ -49,7 +50,8 @@ export default async function(query: IQuery) {
 
   let code = ''
   try {
-    await request(url, { }, query.cookie)
+    const page = await request(url, { }, query.cookie)
+    code = parsePreStudentPage(page.body)
   } catch (err) {
     code = (err as AxiosError).response!.headers.location.replace('/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/grade/sheet/semester-index/', '')
   }

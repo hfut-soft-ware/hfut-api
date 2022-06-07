@@ -1,7 +1,8 @@
 import { AxiosError } from 'axios'
-import cheerio from 'cheerio'
+import * as cheerio from 'cheerio'
 import request from '../shared/request'
 import { IQuery } from '../server'
+import { parsePreStudentPage } from '../shared/utils/parsePreStudentPage'
 
 const base_url = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479'
 
@@ -69,9 +70,16 @@ export default async function(query: IQuery) {
     code = uri[uri.length - 1]
   }
 
+  // 处理预科生
+  if (!code.length) {
+    const preStdPage = await request(url, {}, query.cookie)
+    code = parsePreStudentPage(preStdPage.body)
+  }
+
   const url1 = `${base_url}/eams5-student/for-std/student-info/info/${code}`
   const res = await request(url1, {}, query.cookie)
   const info = parseStudentInfo(res.body as string)
+
   return {
     code: 200,
     msg: '获取学生信息成功',

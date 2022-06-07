@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { IQuery } from '../server'
 import request from '../shared/request'
+import { parsePreStudentPage } from '../shared/utils/parsePreStudentPage'
 
 export default async function(query: IQuery) {
   const locationUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table'
@@ -8,7 +9,9 @@ export default async function(query: IQuery) {
   let studentId = ''
 
   try {
-    await request(locationUrl, {}, query.cookie)
+    const page = await request(locationUrl, {}, query.cookie)
+
+    studentId = parsePreStudentPage(page.body as string)
   } catch (err) {
     studentId = (err as AxiosError).response!.headers.location.replace('/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table/info/', '')
   }
