@@ -46,7 +46,7 @@ export default async function(query: IQuery) {
       if (lesson.id === id) {
         res.credits = lesson.course.credits
 
-        res.examMode = lesson.examMode.nameZh
+        res.examMode = lesson.examMode.nameZh || '其它'
       }
     })
 
