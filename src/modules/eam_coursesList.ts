@@ -46,7 +46,13 @@ export default async function(query: IQuery) {
       if (lesson.id === id) {
         res.credits = lesson.course.credits
 
-        res.examMode = lesson.examMode.nameZh || '其它'
+        try {
+          res.examMode = lesson.examMode.nameZh
+        } catch (error) {
+          console.log(`[AUTO] lesson.examMode.nameZh === null ${error}`)
+        } finally {
+          res.examMode = '其它'
+        }
       }
     })
 
