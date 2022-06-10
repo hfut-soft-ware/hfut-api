@@ -24,7 +24,7 @@ export default async function(query: IQuery) {
 
   const idsParams = {
     bizTypeId: 2,
-    semesterId: 174,
+    semesterId: query.req.query.semesterId || 174,
     dataId: studentId,
   }
 
@@ -73,25 +73,34 @@ export default async function(query: IQuery) {
     }))))
 
   const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
-  const res = await request(allCoursesListUrl, {
-    method: 'post',
-    data: { lessonIds: ids, studentId, weekIndex: '' },
-  }, query.cookie)
 
-  const lessonList = res.body.result.lessonList.map((item: any) => {
-    return {
-      id: item.id,
-      code: item.code,
-      adminClasses: item.name,
-      name: item.courseName.trim().replace(' ', ''),
-      type: item.courseTypeName,
-      teachers: item.teacherAssignmentList.map((item: any) => item.name),
-      studentCount: item.stdCount,
-      weeks: `${item.suggestScheduleWeekInfo ? `${item.suggestScheduleWeekInfo}周` : ''}`,
-      ...getCredits(item.id),
-      schedule: getSchedule(res.body.result.scheduleList.filter((list: any) => list.lessonId === item.id)),
-    }
-  })
+  let res = {} as any
+
+  let lessonList = {} as any
+
+  try {
+    res = await request(allCoursesListUrl, {
+      method: 'post',
+      data: { lessonIds: ids, studentId, weekIndex: '' },
+    }, query.cookie)
+
+    lessonList = res.body.result.lessonList.map((item: any) => {
+      return {
+        id: item.id,
+        code: item.code,
+        adminClasses: item.name,
+        name: item.courseName.trim().replace(' ', ''),
+        type: item.courseTypeName,
+        teachers: item.teacherAssignmentList.map((item: any) => item.name),
+        studentCount: item.stdCount,
+        weeks: `${item.suggestScheduleWeekInfo ? `${item.suggestScheduleWeekInfo}周` : ''}`,
+        ...getCredits(item.id),
+        schedule: getSchedule(res.body.result.scheduleList.filter((list: any) => list.lessonId === item.id)),
+      }
+    })
+  } catch {
+
+  }
 
   return {
     code: 200,
