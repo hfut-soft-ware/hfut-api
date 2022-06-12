@@ -34,7 +34,7 @@ export function createRequest() {
 
         answer.config = res.config
 
-        answer.status = body.status || res.status
+        answer.status = body?.status || res?.status
         resolve(answer)
       }).catch((err) => {
         answer.status = 502
