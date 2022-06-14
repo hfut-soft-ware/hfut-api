@@ -3,6 +3,7 @@ import { Express } from 'express'
 import { isLogin } from './modules/login'
 import { ModulesRequest, ModulesResponse } from './shared/types'
 import cardMiddleware from './middleware/card'
+import libraryMiddleware from './middleware/library'
 
 export function getRoute(filename: string) {
   const parsedRoute = filename.split('_')
@@ -64,6 +65,9 @@ async function setupRoute(app: Express) {
           try {
             if (item.route.startsWith('/card')) {
               await cardMiddleware(query.cookie)
+            }
+            if (item.route.startsWith('/library')) {
+              await libraryMiddleware(query.cookie)
             }
             const moduleResponse = await item.module(query)
             const cookie = moduleResponse?.cookie
