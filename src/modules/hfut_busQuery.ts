@@ -1,19 +1,19 @@
 import * as cheerio from 'cheerio'
 import request from '../shared/request'
 
+interface SchoolBusItem {
+  runRange: string[]
+  startTime: string
+  startPlace: string
+  passPlace: string | null
+  count: string
+}
+
 const url = 'https://www.hfut.edu.cn/xcxx.htm'
 
 function parseSchoolBusInfo(html: string) {
   const $ = cheerio.load(html)
   const trList = $('#vsb_content tr')
-
-  interface SchoolBusItem {
-    runRange: string[]
-    startTime: string
-    startPlace: string
-    passPlace: string | null
-    count: string
-  }
 
   let key = 'weekday'
   const schoolBusMap: Record<string, SchoolBusItem[]> = {
