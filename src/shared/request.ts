@@ -36,7 +36,7 @@ const useProxyAgent = () => {
 
   const updateAgent = async(refresh = false) => {
     const update = async() => {
-      const res = await axios.get('http://api.tianqiip.com/getip?secret=vpn2vn9y5q67w430&num=1&type=json&port=2&time=15')
+      const res = await axios.get('http://api.tianqiip.com/getip?secret=qi3i08ty0pe7opiy&num=1&type=json&port=2&time=3')
       const proxyIp = res.data.data[0]
       cachedAgent.host = proxyIp.ip
       cachedAgent.port = proxyIp.port
@@ -53,6 +53,12 @@ const useProxyAgent = () => {
       await update()
     } else if (refresh) {
       await update()
+    } else {
+      agent.tunnel = tunnel.httpsOverHttp({
+        proxy: {
+          ...cachedAgent,
+        },
+      })
     }
   }
 
