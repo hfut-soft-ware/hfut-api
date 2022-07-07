@@ -6,6 +6,10 @@ import login_verify from './login_verify'
 const url1 = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421f3f652d22f367d44300d8db9d6562d/cas/login?service=https%3A%2F%2Fwebvpn.hfut.edu.cn%2Flogin%3Fcas_login%3Dtrue'
 
 export default async function login(query: IQuery) {
+  if (query.cookie) {
+    query.cookie = ''
+  }
+
   const res = await login_verify(query)
 
   if ((res as any).code !== 200) {
