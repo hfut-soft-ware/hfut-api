@@ -14,7 +14,7 @@ async function start() {
 
   await setupServer(app)
 
-  const port = 5050
+  const port = 8082
 
   app.listen(port, async() => {
     console.log(`Server is running on port ${port}`)
