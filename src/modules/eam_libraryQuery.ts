@@ -32,7 +32,7 @@ export default async function(query: IQuery) {
   const res = await request(url, {
     data,
     method: 'POST',
-  }, query.cookie)
+  }, query)
   return {
     code: 200,
     msg: '获取图书检索信息成功',

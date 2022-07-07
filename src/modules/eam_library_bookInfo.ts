@@ -51,7 +51,7 @@ export default async function(query: IQuery) {
       'vpn-12-o1-210.45.242.5:8080': '',
       marc_no,
     },
-  }, query.cookie)
+  }, query)
   const { success, data } = parseBookState(res.body)
   if (success) {
     return {
