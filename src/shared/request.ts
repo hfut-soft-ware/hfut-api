@@ -24,8 +24,6 @@ const getAgent = useThrottle(async() => {
   const url = 'http://route.xiongmaodaili.com/xiongmao-web/api/glip?secret=02f0fd4b8aeac2e4ac952960f07d312f&orderNo=GL20220721095032iUmJG8F4&count=1&isTxt=0&proxyType=1'
   const res = await axios.get(url)
 
-  console.log(res.data.obj)
-
   return tunnel.httpsOverHttp({
     proxy: {
       host: res.data.obj[0].ip,
@@ -42,11 +40,11 @@ export function createRequest() {
     return new Promise(async(resolve, reject) => {
       const config = { url, method: 'get', maxRedirects: 0, ...options, headers } as AxiosRequestConfig
 
-      const agent = await getAgent()
-
-      config.httpsAgent = agent
-      config.httpsAgent = agent
-      config.proxy = false
+      // const agent = await getAgent()
+      //
+      // config.httpsAgent = agent
+      // config.httpsAgent = agent
+      // config.proxy = false
 
       Reflect.deleteProperty(options, 'headers')
 

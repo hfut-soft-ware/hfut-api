@@ -1,15 +1,14 @@
 import { AxiosError } from 'axios'
 import * as cheerio from 'cheerio'
-import request from '../shared/request'
-import { IQuery } from '../server'
-import { parsePreStudentPage } from '../shared/utils/parsePreStudentPage'
+import request from '../../shared/request'
+import { IQuery } from '../../server'
+import { parsePreStudentPage } from '../../shared/utils/parsePreStudentPage'
 
-const base_url = 'http://jxglstu.hfut.edu.cn/eams5-student'
+const base_url = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479'
 
 const url = `${base_url}/eams5-student/for-std/student-info`
 
 export default async function(query: IQuery) {
-  console.log(query.cookie)
   const parseStudentInfo = (body: string) => {
     const $ = cheerio.load(body)
 
@@ -67,7 +66,8 @@ export default async function(query: IQuery) {
   try {
     await request(url, {}, query)
   } catch (err) {
-    code = (err as AxiosError).response!.headers.location.replace('/eams5-student/for-std/student-info/info/', '')
+    const uri = (err as AxiosError).response!.headers.location.split('/')
+    code = uri[uri.length - 1]
   }
 
   // 处理预科生

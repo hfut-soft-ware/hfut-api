@@ -1,9 +1,10 @@
 import * as fs from 'fs'
 import { Express } from 'express'
-import { isLogin } from './modules/login'
 import { ModulesRequest, ModulesResponse } from './shared/types'
 import cardMiddleware from './middleware/card'
 import libraryMiddleware from './middleware/library'
+import { isLogin } from './modules/login'
+import { isVPNLogin } from './modules/vpn/login'
 
 export function getRoute(filename: string) {
   const parsedRoute = filename.split('_')
@@ -19,10 +20,12 @@ export function getRoute(filename: string) {
   return route
 }
 
-async function getModules() {
+async function getModules(vpn = false) {
   let files: string[] = []
 
-  await fs.promises.readdir('./src/modules').then((res) => {
+  const rootDir = `./src/modules${vpn ? '/vpn' : ''}`
+
+  await fs.promises.readdir(rootDir).then((res) => {
     files = res
   }).catch((err) => {
     console.log('An error occurred when read dir\n', err)
@@ -30,10 +33,10 @@ async function getModules() {
 
   return files.filter(item => item.endsWith('.ts')).map((item) => {
     const filename = item.replace('.ts', '')
-    const module = require(`./modules/${filename}`).default
+    const module = require(`./modules/${vpn ? 'vpn/' : ''}${filename}`).default
     const route = getRoute(filename)
 
-    return { module, route }
+    return { module, route: `${vpn ? '/vpn' : ''}${route}` }
   })
 }
 
@@ -44,7 +47,7 @@ export interface IQuery {
 }
 
 async function setupRoute(app: Express) {
-  const modules = await getModules()
+  const modules = [...await getModules(), ...await getModules(true)]
 
   modules.forEach((item) => {
     app.get(item.route, (req, res) => {
@@ -60,13 +63,14 @@ async function setupRoute(app: Express) {
         cookieValue = cookie.slice(0, cookie.indexOf(';')).replace('wengine_vpn_ticketwebvpn_hfut_edu_cn=', '')
       }
 
-      isLogin(cookie).then(async(response) => {
-        if (response || item.route === '/login' || item.route === '/login/verify') {
+      (item.route.includes('vpn') ? isVPNLogin : isLogin)(cookie).then(async(response) => {
+        if (
+          response || /(\/vpn)?\/(login)+(\/verify)?/.test('/vpn/login/verify')) {
           try {
-            if (item.route.startsWith('/card')) {
+            if (item.route.startsWith('/card') || item.route.startsWith('/vpn/card')) {
               await cardMiddleware(query.cookie)
             }
-            if (item.route.startsWith('/library')) {
+            if (item.route.startsWith('/library') || item.route.startsWith('/vpn/library')) {
               await libraryMiddleware(query.cookie)
             }
             const moduleResponse = await item.module(query)
