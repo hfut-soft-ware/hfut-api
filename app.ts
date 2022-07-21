@@ -4,11 +4,9 @@ import { setupServer } from './src/server'
 const app = express()
 
 async function start() {
-  app.get('/', (req, res) => {
+  app.get('/', async(req, res) => {
     res.send({
-      data: {
-        a: app.route,
-      },
+      msg: '你干嘛~，哎哟',
     })
   })
 
