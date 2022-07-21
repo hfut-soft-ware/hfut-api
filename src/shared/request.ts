@@ -20,7 +20,6 @@ interface IAnswer {
 
   config?: AxiosResponse['config']
 }
-
 const getAgent = useThrottle(async() => {
   const url = 'http://route.xiongmaodaili.com/xiongmao-web/api/glip?secret=02f0fd4b8aeac2e4ac952960f07d312f&orderNo=GL20220721095032iUmJG8F4&count=1&isTxt=0&proxyType=1'
   const res = await axios.get(url)
