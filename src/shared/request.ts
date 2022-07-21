@@ -32,7 +32,7 @@ const getAgent = useThrottle(async() => {
       port: res.data.obj[0].port,
     },
   })
-}, 3 * 60 * 1000, true)
+}, 4.5 * 60 * 1000, true)
 
 export function createRequest() {
   return async(url: string, options: AxiosRequestConfig, query?: Partial<IQuery>): Promise<IAnswer> => {
