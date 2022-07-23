@@ -18,34 +18,21 @@ export default async function login(query: IQuery) {
 
   const payload = { cookie: (res as any)?.data?.cookie || '' }
 
-  const { token, cookie: oneCookie } = await loginOne(query.req.query.username as string, (res as any).data.password, payload.cookie)
+  const { cookie: oneCookie } = await loginOne(query.req.query.username as string, (res as any).data.password, payload.cookie)
 
   payload.cookie = oneCookie
 
-  // 登录教务
-  const eamUrl = 'https://cas.hfut.edu.cn/cas/login?service=http://jxglstu.hfut.edu.cn/eams5-student/neusoft-sso/login'
-  let firstRed = ''
-  try {
-    const res = await request(eamUrl, { maxRedirects: 0 })
-  } catch (err) {
-    firstRed = (err as AxiosError).response!.headers.location
-  }
-  console.log(firstRed)
+  const { cookie: emaCookie } = await loginEam(payload.cookie)
 
-  // 感兴趣的可以执行一下下面的逻辑，会输出你个人的信息
-  // const studentInfo = await request('http://jxglstu.hfut.edu.cn/eams5-student/ws/student/home-page/students', {}, payload)
-  // console.log(studentInfo.body)
+  payload.cookie = emaCookie
 
-  payload.cookie = payload.cookie.split('; ')[0]
   const cookie = payload.cookie
 
   return {
     code: 200,
     msg: '登录成功',
-    cookie,
     data: {
       cookie,
-      token,
     },
   }
 }
@@ -99,4 +86,41 @@ async function loginOne(username: string, password: string, cookie: string) {
 
 export async function isLogin(cookie?: string) {
   return true
+}
+
+async function loginEam(cookie: string) {
+  const payload = { cookie }
+
+  const eamUrl = 'https://cas.hfut.edu.cn/cas/login?service=http://jxglstu.hfut.edu.cn/eams5-student/neusoft-sso/login'
+
+  let location = ''
+  try {
+    await request(eamUrl, {}, payload)
+  } catch (err) {
+    location = (err as AxiosError).response!.headers.location
+  }
+
+  let session = ''
+  try {
+    await request(location, {}, payload)
+  } catch (err) {
+    const cookies = (err as AxiosError).response!.headers['set-cookie'] as string[]
+    session = cookies[0].split(';')[0]
+  }
+  payload.cookie = session
+  try {
+    await request('http://jxglstu.hfut.edu.cn/eams5-student/neusoft-sso/login', {}, payload)
+  } catch (err) {
+  }
+
+  // try {
+  //   const { body } = await request('http://jxglstu.hfut.edu.cn/eams5-student/ws/student/home-page/students', {}, payload)
+  //   console.log(body)
+  // } catch (error) {
+
+  // }
+
+  return {
+    cookie: payload.cookie,
+  }
 }
