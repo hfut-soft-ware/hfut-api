@@ -4,18 +4,15 @@ import request from '../shared/request'
 import { parsePreStudentPage } from '../shared/utils/parsePreStudentPage'
 
 export default async function(query: IQuery) {
-  const locationUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table'
+  const locationUrl = 'http://jxglstu.hfut.edu.cn/eams5-student/for-std/course-table'
 
   let studentId = ''
-
   try {
     const page = await request(locationUrl, {}, query)
-
     studentId = parsePreStudentPage(page.body as string)
   } catch (err) {
-    studentId = (err as AxiosError).response!.headers.location.replace('/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table/info/', '')
+    studentId = (err as AxiosError).response!.headers.location.split('/')[5]
   }
-
   /**
    *
    * 关于bizTypeId合肥校区是2, 宣城校区是23
@@ -23,17 +20,16 @@ export default async function(query: IQuery) {
    */
 
   const idsParams = {
-    bizTypeId: 2,
+    bizTypeId: query.req.query.bizTypeId || 2,
     // 每个学期记得更换一次，下次找个方法自动解决
     semesterId: query.req.query.semesterId || 174,
     dataId: studentId,
   }
 
-  let courseUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/course-table/get-data?vpn-12-o1-jxglstu.hfut.edu.cn'
+  let courseUrl = 'http://jxglstu.hfut.edu.cn/eams5-student/for-std/course-table/get-data'
   let courseIdsRes = await request(courseUrl, {
     params: idsParams,
   }, query)
-
   if (courseIdsRes.body?.lessonIds?.length === 0) {
     idsParams.bizTypeId = 23
     courseIdsRes = await request(courseUrl, {
@@ -73,7 +69,7 @@ export default async function(query: IQuery) {
       weekIndex: item.weekIndex,
     }))))
 
-  const allCoursesListUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/schedule-table/datum?vpn-12-o1-jxglstu.hfut.edu.cn'
+  const allCoursesListUrl = 'http://jxglstu.hfut.edu.cn/eams5-student/ws/schedule-table/datum '
 
   let res = {} as any
 

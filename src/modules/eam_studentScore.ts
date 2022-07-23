@@ -44,7 +44,7 @@ function parseScore(html: string) {
 }
 
 export default async function(query: IQuery) {
-  const url = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/grade/sheet'
+  const url = 'http://jxglstu.hfut.edu.cn/eams5-student/for-std/grade/sheet'
 
   const semester = query.req.query.semester || ''
 
@@ -53,10 +53,10 @@ export default async function(query: IQuery) {
     const page = await request(url, { }, query)
     code = parsePreStudentPage(page.body)
   } catch (err) {
-    code = (err as AxiosError).response!.headers.location.replace('/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/grade/sheet/semester-index/', '')
+    code = (err as AxiosError).response!.headers.location.split('/')[6]
   }
 
-  const iframeUrl = `https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/grade/sheet/info/${code}?semester=${semester}`
+  const iframeUrl = `${url}/info/${code}?semester=${semester}`
 
   const html = await request(iframeUrl, {}, query)
 

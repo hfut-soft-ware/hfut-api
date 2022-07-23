@@ -25,7 +25,7 @@ function parseDetail(doms: Cheerio<cheerio.Element>) {
 }
 
 export default async function(query: IQuery) {
-  const url = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/student-info'
+  const url = 'http://jxglstu.hfut.edu.cn/eams5-student/for-std/student-info'
   let res = {} as any
 
   let code = ''
@@ -33,9 +33,9 @@ export default async function(query: IQuery) {
     const prePage = await request(url, { }, query)
     code = parsePreStudentPage(prePage.body)
   } catch (err) {
-    code = (err as AxiosError).response!.headers.location.replace('/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/student-info/info/', '')
+    code = (err as AxiosError).response!.headers.location.split('/')[5]
   } finally {
-    res = await request(`https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/student-info/info/${code}`, { }, query)
+    res = await request(`${url}/info/${code}`, { }, query)
   }
 
   const $ = cheerio.load(res.body)
