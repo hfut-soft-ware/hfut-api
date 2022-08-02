@@ -18,7 +18,7 @@ export default async function login(query: IQuery) {
 
   const payload = { cookie: (res as any)?.data?.cookie || '' }
 
-  const { cookie: oneCookie } = await loginOne(query.req.query.username as string, (res as any).data.password, payload.cookie)
+  const { cookie: oneCookie } = await loginOne(payload.cookie, res?.data?.ticketCode || '')
 
   payload.cookie = oneCookie
 
@@ -31,32 +31,15 @@ export default async function login(query: IQuery) {
   return {
     code: 200,
     msg: '登录成功',
+    cookie,
     data: {
       cookie,
     },
   }
 }
 
-async function loginOne(username: string, password: string, cookie: string) {
+async function loginOne(cookie: string, ticketCode: string) {
   const payload = { cookie }
-  let ticketCode = ''
-  try {
-    await request(url1, {
-      url: url1,
-      maxRedirects: 0,
-      params: {
-        username,
-        capcha: '',
-        execution: 'e1s1',
-        _eventId: 'submit',
-        password,
-        geolocation: '',
-      },
-    }, payload)
-  } catch (err) {
-    ticketCode = (err as AxiosError).response!.headers.location.replace('https://cas.hfut.edu.cn/cas/oauth2.0/callbackAuthorize?client_id=BsHfutEduPortal&redirect_uri=https%3A%2F%2Fone.hfut.edu.cn%2Fhome%2Findex&response_type=code&client_name=CasOAuthClient&ticket=', '')
-    payload.cookie += `; ${(err as AxiosError).response!.headers['set-cookie']![0].replace(' Path=/cas/; HttpOnly', '').replace(';', '')}`
-  }
 
   try {
     await request('https://cas.hfut.edu.cn/cas/oauth2.0/callbackAuthorize?client_id=BsHfutEduPortal&redirect_uri=https%3A%2F%2Fone.hfut.edu.cn%2Fhome%2Findex&response_type=code&client_name=CasOAuthClient', {
@@ -85,7 +68,20 @@ async function loginOne(username: string, password: string, cookie: string) {
 }
 
 export async function isLogin(cookie?: string) {
-  return true
+  if (!cookie) {
+    return
+  }
+
+  try {
+    await request('https://cas.hfut.edu.cn/cas/oauth2.0/authorize?response_type=code&client_id=BsHfutEduPortal&redirect_uri=https%3A//one.hfut.edu.cn/home/index', {}, { cookie })
+  } catch (err: any) {
+    const redirectUrl = (err as AxiosError).response!.headers.location
+    if (!redirectUrl.includes('code')) {
+      return false
+    }
+
+    return true
+  }
 }
 
 async function loginEam(cookie: string) {

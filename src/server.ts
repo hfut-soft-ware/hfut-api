@@ -65,7 +65,8 @@ async function setupRoute(app: Express) {
 
       (item.route.includes('vpn') ? isVPNLogin : isLogin)(cookie).then(async(response) => {
         if (
-          response || /(\/vpn)?\/(login)+(\/verify)?/.test('/vpn/login/verify')) {
+          response || /(\/vpn)?\/(login)+(\/verify)?/.test(item.route)
+        ) {
           try {
             if (item.route.startsWith('/card') || item.route.startsWith('/vpn/card')) {
               await cardMiddleware(query.cookie)
@@ -79,6 +80,7 @@ async function setupRoute(app: Express) {
               res.setHeader('Set-Cookie', cookie)
               delete moduleResponse.cookie
             }
+
             res.status(moduleResponse.code || moduleResponse.status).send(moduleResponse.body || moduleResponse)
             if (req.originalUrl.includes('login')) {
               req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))

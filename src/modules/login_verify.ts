@@ -1,4 +1,6 @@
 import * as CryptoJS from 'crypto-js'
+import { AxiosError } from 'axios'
+import * as cheerio from 'cheerio'
 import request, { getCookie } from '../shared/request'
 import { IQuery } from '../server'
 
@@ -45,24 +47,43 @@ export default async function(query: IQuery, getPwd = false) {
   const encryptedPwd = encryptionPwd(password, saltKey)
   const url3 = `https://cas.hfut.edu.cn/cas/policy/checkUserIdenty?username=${username}&password=${encryptedPwd}&_=${Date.now()}`
 
-  const res3 = await request(url3, {}, payload)
+  await request(url3, {}, payload)
 
-  if (res3.body.data.authFlag) {
-    const res = {
+  try {
+    await request(url1, {
+      url: url1,
+      maxRedirects: 0,
+      params: {
+        username,
+        capcha: '',
+        execution: 'e1s1',
+        _eventId: 'submit',
+        password: encryptedPwd,
+        geolocation: '',
+      },
+    }, payload)
+  } catch (err: any) {
+    const $ = cheerio.load((err as AxiosError).response?.data || '')
+
+    const errMsg = $('#errorpassword').text().trim()
+
+    if (errMsg.length > 0) {
+      return {
+        code: 400,
+        msg: errMsg,
+      }
+    }
+
+    const ticketCode = (err as AxiosError).response!.headers.location.replace('https://cas.hfut.edu.cn/cas/oauth2.0/callbackAuthorize?client_id=BsHfutEduPortal&redirect_uri=https%3A%2F%2Fone.hfut.edu.cn%2Fhome%2Findex&response_type=code&client_name=CasOAuthClient&ticket=', '')
+    payload.cookie += `; ${(err as AxiosError).response!.headers['set-cookie']![0].replace(' Path=/cas/; HttpOnly', '').replace(';', '')}`
+
+    return {
       code: 200,
       msg: '登录成功',
       data: {
+        ticketCode,
         cookie: payload.cookie,
       },
-    }
-    if (getPwd) {
-      Reflect.set(res.data, 'password', encryptedPwd)
-    }
-    return res
-  } else {
-    return {
-      code: 400,
-      msg: '用户名或密码错误',
     }
   }
 }
