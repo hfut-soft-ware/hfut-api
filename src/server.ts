@@ -90,7 +90,7 @@ async function setupRoute(app: Express) {
             console.log(`[ERR] ${cookieValue} ${err} at ${err.stack}`)
             res.status(500).send({
               code: 500,
-              msg: '服务器错误',
+              msg: '服务器错误1',
             })
           }
         } else {
@@ -124,7 +124,7 @@ function setupServerConfig(app: Express) {
   // @ts-expect-error
   app.use((err, req, res, next) => {
     console.error(err.stack)
-    res.status(500).send({ code: 500, msg: '服务器错误' })
+    res.status(500).send({ code: 500, msg: '服务器错误2' })
     next()
   })
 }
