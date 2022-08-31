@@ -4,6 +4,8 @@ import request from '../shared/request'
 import { IQuery } from '../server'
 import { parsePreStudentPage } from '../shared/utils/parsePreStudentPage'
 
+import type { IAnswer } from '../shared/types'
+
 const url = 'http://jxglstu.hfut.edu.cn/eams5-student/for-std/student-info'
 
 const parseStudentInfo = (body: string) => {
@@ -73,7 +75,15 @@ export default async function(query: IQuery) {
   }
 
   const url1 = `${url}/info/${code}`
-  const res = await request(url1, { }, query)
+  let res = {} as IAnswer
+  try {
+    res = await request(url1, { }, query)
+  } catch (err) {
+    return {
+      code: 400,
+      msg: (err as AxiosError).message,
+    }
+  }
   const info = parseStudentInfo(res.body as string)
 
   return {
