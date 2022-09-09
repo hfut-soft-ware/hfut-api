@@ -75,7 +75,7 @@ export async function isLogin(cookie?: string) {
   try {
     await request('https://cas.hfut.edu.cn/cas/oauth2.0/authorize?response_type=code&client_id=BsHfutEduPortal&redirect_uri=https%3A//one.hfut.edu.cn/home/index', {}, { cookie })
   } catch (err: any) {
-    const redirectUrl = (err as AxiosError).response!.headers.location
+    const redirectUrl = (err as AxiosError).response?.headers?.location || ''
     if (!redirectUrl.includes('code')) {
       return false
     }

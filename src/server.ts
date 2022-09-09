@@ -85,9 +85,9 @@ async function setupRoute(app: Express) {
             if (req.originalUrl.includes('login')) {
               req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
             }
-            console.log(`[OK] ${cookieValue} ${req.originalUrl}`)
+            console.log(`[OK] ${cookieValue} ${item.route}`)
           } catch (err: any) {
-            console.log(`[ERR] ${cookieValue} ${err} at ${err.stack}`)
+            console.log(`${new Date()}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${err.stack}`)
             res.status(500).send({
               code: 500,
               msg: '服务器错误1',

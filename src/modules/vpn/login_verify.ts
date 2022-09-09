@@ -51,8 +51,7 @@ export default async function(query: IQuery) {
 
   // auth验证
   const authFlagUrl = `https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421f3f652d22f367d44300d8db9d6562d/cas/policy/checkUserIdenty?vpn-12-o1-cas.hfut.edu.cn=&username=${username}&password=${encryptedPwd}&_=${now}`
-  const res3 = await request(authFlagUrl, {}, payload)
-  console.log(res3.body)
+  await request(authFlagUrl, {}, payload)
 
   let redirectRes: any = { body: '' }
   try {
