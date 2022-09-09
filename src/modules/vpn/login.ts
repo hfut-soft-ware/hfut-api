@@ -18,29 +18,37 @@ export default async function login(query: IQuery) {
 
   const cookie1 = res?.data?.cookie || ''
 
-  // 信息门户
-  const oneToken = await getOneToken(cookie1.replace('; Path=/; Domain=webvpn.hfut.edu.cn; HttpOnly', ''), query)
+  try {
+    // 信息门户
+    const oneToken = await getOneToken(cookie1.replace('; Path=/; Domain=webvpn.hfut.edu.cn; HttpOnly', ''), query)
 
-  // 登录教务
-  const eamUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421f3f652d22f367d44300d8db9d6562d/cas/login?service=http://jxglstu.hfut.edu.cn/eams5-student/neusoft-sso/login'
-  await request(eamUrl, { maxRedirects: 5 }, {
-    cookie: cookie1,
-  })
+    // 登录教务
+    const eamUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421f3f652d22f367d44300d8db9d6562d/cas/login?service=http://jxglstu.hfut.edu.cn/eams5-student/neusoft-sso/login'
+    await request(eamUrl, { maxRedirects: 5 }, {
+      cookie: cookie1,
+    })
 
-  // 感兴趣的可以执行一下下面的逻辑，会输出你个人的信息
-  // const studentInfo = await request({ config: { url: 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/student/home-page/students?vpn-12-o1-jxglstu.hfut.edu.cn' } })
-  // console.log(studentInfo.data)
+    // 感兴趣的可以执行一下下面的逻辑，会输出你个人的信息
+    // const studentInfo = await request({ config: { url: 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/ws/student/home-page/students?vpn-12-o1-jxglstu.hfut.edu.cn' } })
+    // console.log(studentInfo.data)
 
-  const cookie = cookie1.replace('; Path=/; Domain=webvpn.hfut.edu.cn; HttpOnly', '')
+    const cookie = cookie1.replace('; Path=/; Domain=webvpn.hfut.edu.cn; HttpOnly', '')
 
-  return {
-    code: 200,
-    msg: '登录成功',
-    cookie,
-    data: {
+    return {
+      code: 200,
+      msg: '登录成功',
       cookie,
-      oneToken,
-    },
+      data: {
+        cookie,
+        oneToken,
+      },
+    }
+  } catch (err) {
+    console.log((err as Error).stack)
+    return {
+      code: 400,
+      msg: '[login]获取用户token错误',
+    }
   }
 }
 
