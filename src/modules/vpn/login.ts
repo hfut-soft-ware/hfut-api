@@ -41,6 +41,7 @@ export default async function login(query: IQuery) {
       data: {
         cookie,
         oneToken,
+        oneLoginCookie: cookie,
       },
     }
   } catch (err) {

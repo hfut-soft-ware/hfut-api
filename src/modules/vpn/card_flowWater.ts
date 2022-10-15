@@ -1,6 +1,6 @@
 import * as Buffer from 'buffer'
-import cheerio from 'cheerio'
 import iconv from 'iconv-lite'
+import cheerio from 'cheerio'
 
 import { IQuery } from '../../server'
 import request from '../../shared/request'
