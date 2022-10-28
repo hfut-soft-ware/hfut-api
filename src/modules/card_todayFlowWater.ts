@@ -58,6 +58,9 @@ export default async function(query: IQuery) {
   return {
     code: 200,
     msg: '获取一卡通流水信息成功',
-    data,
+    data: {
+      ...data,
+      cardCookie: query.cookie,
+    },
   }
 }

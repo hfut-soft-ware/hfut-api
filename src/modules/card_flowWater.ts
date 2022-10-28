@@ -51,7 +51,6 @@ export default async function(query: IQuery) {
 
   const account = parserAccount(resBody)
 
-  const time1 = Date.now()
   await request(
     url1,
     {
@@ -64,7 +63,6 @@ export default async function(query: IQuery) {
     query,
   )
 
-  const time2 = Date.now()
   await request(
     url2,
     {
@@ -77,7 +75,6 @@ export default async function(query: IQuery) {
     query,
   )
 
-  const time3 = Date.now()
   let res2
   res2 = await request(
     url3,
@@ -108,14 +105,13 @@ export default async function(query: IQuery) {
     )
   }
   const data = parserFlowWater(res2.body)
-  const time4 = Date.now()
-  console.log(time2 - time1)
-  console.log(time3 - time2)
-  console.log(time4 - time3)
 
   return {
     code: 200,
     msg: '获取一卡通流水信息成功',
-    data,
+    data: {
+      ...data,
+      cardCookie: query.cookie,
+    },
   }
 }
