@@ -52,7 +52,7 @@ export default async function(query: IQuery) {
 
   return {
     code: 200,
-    msg: '获取待教评列表成功',
+    msg: '获取评列表成功',
     data: {
       list,
     },

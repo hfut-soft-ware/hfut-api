@@ -21,7 +21,7 @@ export default async function(query: IQuery) {
   const blankQuestion = survey.blankQuestions[0]
   return {
     code: 200,
-    msg: '获取待教评选项成功',
+    msg: '获取教评选项成功',
     data: {
       surveyAssoc: res.lessonSurveyLesson.surveyAssoc,
       radioQuestions,
