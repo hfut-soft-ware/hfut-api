@@ -3,14 +3,15 @@ import { AxiosError } from 'axios'
 import { IQuery } from '../server'
 import request from '../shared/request'
 
-// lessonSurveyTasks
 interface SurveyTask {
   teacherName: string
   id: number
+  submitted: boolean
 }
 
 interface List {
   courseName: string
+  endTime: string
   surveyTasks: SurveyTask[]
 }
 
@@ -38,18 +39,20 @@ export default async function(query: IQuery) {
       tasks.push({
         id: taskItem.id,
         teacherName: taskItem.teacher.person.nameZh,
+        submitted: taskItem.submitted,
       })
     })
 
     list.push({
       courseName: surveyItem.course.nameZh,
+      endTime: getEndTime(surveyItem.openEndTimeContent),
       surveyTasks: tasks,
     })
   })
 
   return {
     code: 200,
-    msg: '获取获取待教评列表成功',
+    msg: '获取待教评列表成功',
     data: {
       list,
     },
@@ -65,4 +68,7 @@ function parseHTML(html: string) {
 function getStudentId(locatonPath: string) {
   const items = locatonPath.split('/')
   return items[items.length - 1]
+}
+function getEndTime(openEndTimeContent: string) {
+  return openEndTimeContent.split('~')[1]
 }

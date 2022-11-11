@@ -2,6 +2,7 @@ import express from 'express'
 import { setupServer } from './src/server'
 
 const app = express()
+app.use(express.json())
 
 async function start() {
   app.get('/', async(req, res) => {

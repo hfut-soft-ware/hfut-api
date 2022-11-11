@@ -1,0 +1,44 @@
+{
+  "surveyAssoc": 21,
+  "lessonSurveyTaskAssoc": 4611721,
+  "radioQuestionAnswers": [
+    { "questionId": "d9cc152e-8aaa-4c81-acc8-603475928b2c", "optionName": "超过目标" },
+    { "questionId": "587b5aea-463c-431c-b756-d46c0d0e4d4c", "optionName": "超过目标" },
+    { "questionId": "7c7df6b0-0b10-4469-842e-6de40522d8c6", "optionName": "超过目标" },
+    { "questionId": "d239ece1-3c46-41cb-8c1b-caba79f7f782", "optionName": "超过目标" },
+    { "questionId": "ab09f814-bc93-44d3-b90b-9e6ae4c29194", "optionName": "超过目标" },
+    { "questionId": "106a2620-6f18-4430-9cc0-fc2f833c0064", "optionName": "超过目标" },
+    { "questionId": "69e6174a-a46f-47b9-94c5-562c0fa52bb6", "optionName": "超过目标" },
+    { "questionId": "84bfc5b3-0145-41aa-b45a-eacf0a782ccb", "optionName": "超过目标" },
+    { "questionId": "d8fc5b19-cff8-421e-b04e-fb3c9594f797", "optionName": "非常匹配" },
+    { "questionId": "d76ca49b-29b7-44f5-8697-c5b2a9552615", "optionName": "非常契合" },
+    { "questionId": "40cac6b7-270c-4ceb-9858-998fe7fe7e48", "optionName": "非常认真" },
+    {
+      "questionId": "9a9c883d-3fbd-4f01-b4c7-3f679540279b",
+      "optionName": "能充分利用教材和其它学习资源设计教学方案，并做好充分的教学预设。"
+    },
+    {
+      "questionId": "fc9b23f6-df87-4cb4-9655-02d12de3bb3f",
+      "optionName": "能根据教学活动需要，科学、合理地利用现代教育技术手段。"
+    },
+    {
+      "questionId": "739a6979-3bcb-41ed-a136-73ef156354f3",
+      "optionName": "能根据教学活动需要，科学、合理地综合运用多种教学方法。  "
+    },
+    {
+      "questionId": "0173d3cf-4ee1-4c4f-8b13-6fc0f7a12d9f",
+      "optionName": "能根据教学设计组织教学活动，激发学生学习兴趣，创新教学活动，促进教学相长。"
+    },
+    {
+      "questionId": "bc4ad0a6-6bcc-44ca-90cf-88f16d3a2123",
+      "optionName": "学生积极主动参与教学活动，掌握所学知识和技能，并形成积极的情感态度和价值观。"
+    },
+    {
+      "questionId": "4d2b1795-6b25-44ca-9a04-2d41ba6a2882",
+      "optionName": "能根据学生对课堂内容的掌握情况，科学、合理地拓展与延伸专业知识，激发学生的学习兴趣和进一步钻研和探究学科知识的愿望。 "
+    }
+  ],
+  "blankQuestionAnswers": [
+    { "questionId": "0dd65ecd-d07f-4960-a0b8-3446565b5749", "content": "好" }
+  ]
+}

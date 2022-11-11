@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { Express } from 'express'
+import { Express, Request, Response } from 'express'
 import { ModulesRequest, ModulesResponse } from './shared/types'
 import cardMiddleware from './middleware/card'
 import libraryMiddleware from './middleware/library'
@@ -32,11 +32,18 @@ async function getModules(vpn = false) {
   })
 
   return files.filter(item => item.endsWith('.ts')).map((item) => {
-    const filename = item.replace('.ts', '')
+    let post = false
+    let filename = item.replace('.ts', '')
+    if (filename.endsWith('.post')) {
+      post = true
+    }
     const module = require(`./modules/${vpn ? 'vpn/' : ''}${filename}`).default
+    if (post) {
+      filename = filename.replace('.post', '')
+    }
     const route = getRoute(filename)
 
-    return { module, route: `${vpn ? '/vpn' : ''}${route}` }
+    return { module, route: `${vpn ? '/vpn' : ''}${route}`, post }
   })
 }
 
@@ -46,61 +53,67 @@ export interface IQuery {
   cookie: string
 }
 
+function routerHandler(req: Request, res: Response, item: { module: any; route: string }) {
+  const cookie = req.headers.cookie as string
+  const query: IQuery = {
+    req,
+    res,
+    cookie,
+  }
+
+  let cookieValue = 'Not Exist Cookie'
+  if (cookie) {
+    cookieValue = cookie.slice(0, cookie.indexOf(';')).replace('wengine_vpn_ticketwebvpn_hfut_edu_cn=', '')
+  }
+
+  (item.route.includes('vpn') ? isVPNLogin : isLogin)(cookie).then(async(response) => {
+    if (
+      response || /(\/vpn)?\/(login)+(\/verify)?/.test(item.route)
+    ) {
+      try {
+        if (item.route.startsWith('/card') || item.route.startsWith('/vpn/card')) {
+          await cardMiddleware(query.cookie)
+        }
+        if (item.route.startsWith('/library') || item.route.startsWith('/vpn/library')) {
+          await libraryMiddleware(query.cookie)
+        }
+        const moduleResponse = await item.module(query)
+        const cookie = moduleResponse?.cookie
+        if (cookie) {
+          res.setHeader('Set-Cookie', cookie)
+          delete moduleResponse.cookie
+        }
+
+        res.status(moduleResponse.code || moduleResponse.status).send(moduleResponse.body || moduleResponse)
+        if (req.originalUrl.includes('login')) {
+          req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
+        }
+        console.log(`[OK] ${cookieValue} ${item.route}`)
+      } catch (err: any) {
+        console.log(`${new Date()}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${err.stack}`)
+        res.status(500).send({
+          code: 500,
+          msg: '服务器错误1',
+        })
+      }
+    } else {
+      res.status(401).send({
+        msg: '请登录后查看',
+        code: 401,
+      })
+    }
+  })
+}
+
 async function setupRoute(app: Express) {
   const modules = [...await getModules(), ...await getModules(true)]
 
   modules.forEach((item) => {
-    app.get(item.route, (req, res) => {
-      const cookie = req.headers.cookie as string
-      const query: IQuery = {
-        req,
-        res,
-        cookie,
-      }
-
-      let cookieValue = 'Not Exist Cookie'
-      if (cookie) {
-        cookieValue = cookie.slice(0, cookie.indexOf(';')).replace('wengine_vpn_ticketwebvpn_hfut_edu_cn=', '')
-      }
-
-      (item.route.includes('vpn') ? isVPNLogin : isLogin)(cookie).then(async(response) => {
-        if (
-          response || /(\/vpn)?\/(login)+(\/verify)?/.test(item.route)
-        ) {
-          try {
-            if (item.route.startsWith('/card') || item.route.startsWith('/vpn/card')) {
-              await cardMiddleware(query.cookie)
-            }
-            if (item.route.startsWith('/library') || item.route.startsWith('/vpn/library')) {
-              await libraryMiddleware(query.cookie)
-            }
-            const moduleResponse = await item.module(query)
-            const cookie = moduleResponse?.cookie
-            if (cookie) {
-              res.setHeader('Set-Cookie', cookie)
-              delete moduleResponse.cookie
-            }
-
-            res.status(moduleResponse.code || moduleResponse.status).send(moduleResponse.body || moduleResponse)
-            if (req.originalUrl.includes('login')) {
-              req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
-            }
-            console.log(`[OK] ${cookieValue} ${item.route}`)
-          } catch (err: any) {
-            console.log(`${new Date()}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${err.stack}`)
-            res.status(500).send({
-              code: 500,
-              msg: '服务器错误1',
-            })
-          }
-        } else {
-          res.status(401).send({
-            msg: '请登录后查看',
-            code: 401,
-          })
-        }
-      })
-    })
+    if (item.post) {
+      app.post(item.route, (req, res) => routerHandler(req, res, item))
+    } else {
+      app.get(item.route, (req, res) => routerHandler(req, res, item))
+    }
   })
 }
 
