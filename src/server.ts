@@ -88,7 +88,7 @@ function routerHandler(req: Request, res: Response, item: { module: any; route: 
         if (req.originalUrl.includes('login')) {
           req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
         }
-        console.log(`[OK] ${cookieValue} ${item.route}`)
+        console.log(`${new Date()}[OK] ${cookieValue} ${item.route}`)
       } catch (err: any) {
         console.log(`${new Date()}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${err.stack}`)
         res.status(500).send({
