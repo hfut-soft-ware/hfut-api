@@ -11,6 +11,9 @@ export default async function(query: IQuery) {
     const page = await request(locationUrl, {}, query)
     studentId = parsePreStudentPage(page.body as string)
   } catch (err) {
+    if (!(err as AxiosError).response?.headers) {
+      console.log((err as AxiosError).response)
+    }
     studentId = (err as AxiosError).response!.headers.location.split('/')[5]
   }
   /**
@@ -22,7 +25,7 @@ export default async function(query: IQuery) {
   const idsParams = {
     bizTypeId: query.req.query.bizTypeId || 2,
     // 每个学期记得更换一次，下次找个方法自动解决
-    semesterId: query.req.query.semesterId || 174,
+    semesterId: query.req.query.semesterId || 194,
     dataId: studentId,
   }
 
