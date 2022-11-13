@@ -48,7 +48,7 @@ async function loginOne(cookie: string, ticketCode: string) {
     }, payload)
   } catch (err) {
     if (!(err as AxiosError).response?.headers) {
-      console.log((err as AxiosError).response)
+      console.log(err)
     }
   }
 
@@ -59,7 +59,7 @@ async function loginOne(cookie: string, ticketCode: string) {
     await request('https://cas.hfut.edu.cn/cas/oauth2.0/authorize?response_type=code&client_id=BsHfutEduPortal&redirect_uri=https%3A//one.hfut.edu.cn/home/index', {}, payload)
   } catch (err) {
     if (!(err as AxiosError).response?.headers) {
-      console.log((err as AxiosError).response)
+      console.log(err)
     }
     code = (err as AxiosError).response!.headers.location.replace('https://one.hfut.edu.cn/home/index?code=', '')
   }
@@ -81,7 +81,7 @@ export async function isLogin(cookie?: string) {
     await request('https://cas.hfut.edu.cn/cas/oauth2.0/authorize?response_type=code&client_id=BsHfutEduPortal&redirect_uri=https%3A//one.hfut.edu.cn/home/index', {}, { cookie })
   } catch (err: any) {
     if (!(err as AxiosError).response?.headers) {
-      console.log((err as AxiosError).response)
+      console.log(err)
     }
     const redirectUrl = (err as AxiosError).response?.headers?.location || ''
     if (!redirectUrl.includes('code')) {
@@ -102,7 +102,7 @@ async function loginEam(cookie: string) {
     await request(eamUrl, {}, payload)
   } catch (err) {
     if (!(err as AxiosError).response?.headers) {
-      console.log((err as AxiosError).response)
+      console.log(err)
     }
     location = (err as AxiosError).response!.headers.location
   }
@@ -112,8 +112,9 @@ async function loginEam(cookie: string) {
     await request(location, {}, payload)
   } catch (err) {
     if (!(err as AxiosError).response?.headers) {
-      console.log((err as AxiosError).response)
+      console.log(err)
     }
+
     const cookies = (err as AxiosError).response!.headers['set-cookie'] as string[]
     session = cookies[0].split(';')[0]
   }
@@ -122,7 +123,7 @@ async function loginEam(cookie: string) {
     await request('http://jxglstu.hfut.edu.cn/eams5-student/neusoft-sso/login', {}, payload)
   } catch (err) {
     if (!(err as AxiosError).response?.headers) {
-      console.log((err as AxiosError).response)
+      console.log(err)
     }
   }
 

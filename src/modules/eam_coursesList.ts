@@ -12,7 +12,7 @@ export default async function(query: IQuery) {
     studentId = parsePreStudentPage(page.body as string)
   } catch (err) {
     if (!(err as AxiosError).response?.headers) {
-      console.log((err as AxiosError).response)
+      console.log(err)
     }
     studentId = (err as AxiosError).response!.headers.location.split('/')[5]
   }
