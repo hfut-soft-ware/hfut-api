@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import { Express, Request, Response } from 'express'
+import dayjs from 'dayjs'
 import { ModulesRequest, ModulesResponse } from './shared/types'
 import cardMiddleware from './middleware/card'
 import libraryMiddleware from './middleware/library'
@@ -88,9 +89,9 @@ function routerHandler(req: Request, res: Response, item: { module: any; route: 
         if (req.originalUrl.includes('login')) {
           req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
         }
-        console.log(`${new Date()}[OK] ${cookieValue} ${item.route}`)
+        console.log(`${dayjs().format('YYYY-MM-DD HH:mm:ss')}[OK] ${cookieValue} ${item.route}`)
       } catch (err: any) {
-        console.log(`${new Date()}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${err.stack}`)
+        console.log(`${dayjs().format('YYYY-MM-DD HH:mm:ss')}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${err.stack}`)
         res.status(500).send({
           code: 500,
           msg: '服务器错误1',
