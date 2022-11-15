@@ -90,11 +90,12 @@ function routerHandler(req: Request, res: Response, item: { module: any; route: 
           req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
         }
         console.log(`${dayjs().format('YYYY-MM-DD HH:mm:ss')}[OK] ${cookieValue} ${item.route}`)
-      } catch (err: any) {
-        console.log(`${dayjs().format('YYYY-MM-DD HH:mm:ss')}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${err.stack}`)
+      } catch (err) {
+        console.log(`${dayjs().format('YYYY-MM-DD HH:mm:ss')}[ERR] ${cookieValue || ''} ${item.route}  ${err} at ${(err as Error).stack}`)
         res.status(500).send({
           code: 500,
           msg: '服务器错误1',
+          stack: (err as Error).stack?.toString(),
         })
       }
     } else {

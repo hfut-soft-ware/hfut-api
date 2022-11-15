@@ -13,8 +13,9 @@ export default async function(query: IQuery) {
   const taskId = query.req.query.taskId as string
   const { body: res } = await request(`http://jxglstu.hfut.edu.cn/eams5-student/for-std/lesson-survey/start-survey/${taskId}/get-data`, {}, query)
   const radioQuestions: RadioQuestion[] = []
-  radioQuestions.push(...handleObjectives(res.syllabus.courseObjectives))
-  radioQuestions.push(...handleObjectives(res.syllabus.learningObjectives))
+
+  radioQuestions.push(...handleObjectives(res.syllabus?.courseObjectives))
+  radioQuestions.push(...handleObjectives(res.syllabus?.learningObjectives))
 
   const survey = res.survey
   radioQuestions.push(...handleRadioQuestions(survey.radioQuestions))
@@ -33,7 +34,10 @@ export default async function(query: IQuery) {
   }
 }
 
-function handleObjectives(objectives: any[]) {
+function handleObjectives(objectives: any[] | undefined) {
+  if (!objectives) {
+    return []
+  }
   return objectives.map<RadioQuestion>((item) => {
     return {
       id: item.id,
