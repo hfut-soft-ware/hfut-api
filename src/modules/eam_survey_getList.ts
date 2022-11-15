@@ -27,7 +27,8 @@ export default async function(query: IQuery) {
   const res0 = await request(baseUrl + locatonPath, {}, query)
   const semesterValue = parseHTML(res0.body)
 
-  const res1 = await request(`${baseUrl}/eams5-student/for-std/lesson-survey/${semesterValue}/search/${getStudentId(locatonPath)}`, {}, query)
+  const studentId = getStudentId(locatonPath)
+  const res1 = await request(`${baseUrl}/eams5-student/for-std/lesson-survey/${semesterValue}/search/${studentId}`, {}, query)
 
   const surveyItems = res1.body.forStdLessonSurveySearchVms as any[]
   const list: List[] = []
@@ -55,6 +56,7 @@ export default async function(query: IQuery) {
     msg: '获取评列表成功',
     data: {
       list,
+      studentId,
     },
   }
 }

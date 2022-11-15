@@ -4,7 +4,8 @@ import request from '../shared/request'
 
 export default async function(query: IQuery) {
   const data = query.req.body
-  const { cookie } = await request(`http://jxglstu.hfut.edu.cn/eams5-student/for-std/lesson-survey/start-survey/${data.lessonSurveyTaskAssoc}?REDIRECT_URL=%2Ffor-std%2Flesson-survey%2Fsemester-index%2F152220`, {}, query)
+  const { cookie } = await request(`http://jxglstu.hfut.edu.cn/eams5-student/for-std/lesson-survey/start-survey/${data.lessonSurveyTaskAssoc}?REDIRECT_URL=%2Ffor-std%2Flesson-survey%2Fsemester-index%2F${data.studentId}`, {}, query)
+  delete data.studentId
 
   query.cookie = `${query.cookie}; ${cookie![0].split(';')[0]}`
 
