@@ -1,15 +1,11 @@
 import { AxiosError } from 'axios'
-import { IQuery } from '../server'
-import request from '../shared/request'
+import { IQuery } from '../../server'
+import request from '../../shared/request'
 
 export default async function(query: IQuery) {
   const data = query.req.body
-  const { cookie } = await request(`http://jxglstu.hfut.edu.cn/eams5-student/for-std/lesson-survey/start-survey/${data.lessonSurveyTaskAssoc}?REDIRECT_URL=%2Ffor-std%2Flesson-survey%2Fsemester-index%2F${data.studentId}`, {}, query)
-  delete data.studentId
 
-  query.cookie = `${query.cookie}; ${cookie![0].split(';')[0]}`
-
-  const res = await request('http://jxglstu.hfut.edu.cn/eams5-student/for-std/lesson-survey/check-can-submit', {
+  const res = await request('https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/lesson-survey/check-can-submit?vpn-12-o1-jxglstu.hfut.edu.cn', {
     method: 'POST',
     data,
   }, query)
@@ -23,13 +19,12 @@ export default async function(query: IQuery) {
   }
 
   try {
-    const { body } = await request('http://jxglstu.hfut.edu.cn/eams5-student/for-std/lesson-survey/submit-survey', {
+    const { body } = await request('https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479/eams5-student/for-std/lesson-survey/submit-survey?vpn-12-o1-jxglstu.hfut.edu.cn', {
       method: 'POST',
       data,
       headers: {
         cookie: query.cookie,
       },
-      maxRedirects: 5,
     }, query)
     return {
       code: 200,
