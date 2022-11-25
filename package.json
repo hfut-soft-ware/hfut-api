@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "nodemon index.ts",
-    "build": "nodemon index.ts"
+    "dev": "esno watch index.ts --location=global",
+    "build": "tsup index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -23,7 +23,9 @@
     "babel": "^6.23.0",
     "eslint": "^8.12.0",
     "eslint-plugin-promise": "^6.0.0",
+    "esno": "^0.16.3",
     "jest": "^27.5.1",
+    "tsup": "^6.5.0",
     "typescript": "^4.6.3"
   },
   "dependencies": {
@@ -36,7 +38,7 @@
     "form-data": "^4.0.0",
     "htmlparser2": "^7.2.0",
     "iconv-lite": "^0.6.3",
-    "node-fetch": "^3.2.3",
+    "node-fetch": "^3.2.6",
     "qs": "^6.10.3",
     "tunnel": "^0.0.6"
   }
