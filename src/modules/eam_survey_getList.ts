@@ -11,7 +11,7 @@ interface SurveyTask {
 
 interface List {
   courseName: string
-  endTime: string
+  timeRange: string
   surveyTasks: SurveyTask[]
 }
 
@@ -46,7 +46,7 @@ export default async function(query: IQuery) {
 
     list.push({
       courseName: surveyItem.course.nameZh,
-      endTime: getEndTime(surveyItem.openEndTimeContent),
+      timeRange: handleTime(surveyItem.openEndTimeContent),
       surveyTasks: tasks,
     })
   })
@@ -71,6 +71,8 @@ function getStudentId(locatonPath: string) {
   const items = locatonPath.split('/')
   return items[items.length - 1]
 }
-function getEndTime(openEndTimeContent: string) {
-  return openEndTimeContent.split('~')[1]
+function handleTime(openEndTimeContent: string) {
+  const times = openEndTimeContent.split('~')
+
+  return `${times[0].split(' ')[0]}~${times[1].split(' ')[0]}`
 }
