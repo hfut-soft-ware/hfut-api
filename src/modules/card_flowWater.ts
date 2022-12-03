@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios'
 import { IQuery } from '../server'
-import { cardLogin } from '../shared/cardLogin'
+import { cardLogin } from '../shared/utils/cardLogin'
 import request from '../shared/request'
-import { parserAccount, parserFlowWater } from '../shared/card'
+import { parserAccount, parserFlowWater } from '../shared/utils/card'
 
 const base_url = 'http://172.31.248.20'
 

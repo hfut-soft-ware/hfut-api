@@ -13,4 +13,6 @@ export interface IAnswer {
   status?: number
 
   config?: AxiosResponse['config']
+
+  headers?: AxiosResponse['headers']
 }

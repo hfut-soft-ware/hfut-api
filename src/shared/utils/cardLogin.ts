@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
-import { IQuery } from '../server'
-import request from '../shared/request'
+import { IQuery } from '../../server'
+import request from '../request'
 
 const url = 'https://cas.hfut.edu.cn/cas/login?service=http://172.31.248.20/ahdxdrPortalHome.action'
 

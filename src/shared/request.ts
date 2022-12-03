@@ -75,6 +75,8 @@ export function createRequest() {
 
           answer.status = body?.status || res?.status
 
+          answer.headers = res.headers
+
           resolve(answer)
         })
         .catch(async(err) => {

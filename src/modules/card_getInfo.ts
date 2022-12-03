@@ -2,7 +2,7 @@ import { load } from 'cheerio'
 import { AxiosError } from 'axios'
 import { IQuery } from '../server'
 import request from '../shared/request'
-import { cardLogin } from '../shared/cardLogin'
+import { cardLogin } from '../shared/utils/cardLogin'
 
 const url = 'http://172.31.248.20/accountcardUser.action'
 
