@@ -19,7 +19,7 @@ export const getUniqueId = async(query: IQuery) => {
   if (headers.location.startsWith('/eams5-student/login')) {
     return {
       success: false,
-      uniqueId: 0,
+      uniqueId: '',
     }
   }
   return {

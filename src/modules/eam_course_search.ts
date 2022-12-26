@@ -17,7 +17,7 @@ export default async function(query: IQuery<ReqQuery>) {
   if (!success) {
     return {
       code: 403,
-      msg: 'on cookie or expired',
+      msg: 'on cookie or cookie expired',
       data: {},
     }
   }
