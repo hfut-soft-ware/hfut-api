@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { Express, Request, Response } from 'express'
 import dayjs from 'dayjs'
-import { ModulesRequest, ModulesResponse } from './shared/types'
+import { ModulesResponse } from './shared/types'
 import cardMiddleware from './middleware/card'
 import libraryMiddleware from './middleware/library'
 import { isLogin } from './modules/login'
@@ -48,8 +48,8 @@ async function getModules(vpn = false) {
   })
 }
 
-export interface IQuery {
-  req: ModulesRequest
+export interface IQuery<ReqQuery = any> {
+  req: Request<any, any, any, ReqQuery>
   res: ModulesResponse
   cookie: string
 }

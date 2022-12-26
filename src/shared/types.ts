@@ -14,5 +14,5 @@ export interface IAnswer {
 
   config?: AxiosResponse['config']
 
-  headers?: AxiosResponse['headers']
+  headers: AxiosResponse['headers']
 }
