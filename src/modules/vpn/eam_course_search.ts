@@ -1,19 +1,13 @@
-import { IQuery } from '../server'
-import request from '../shared/request'
-import { getUniqueId } from '../shared/utils/index'
+import { IQuery } from '../../server'
+import request from '../../shared/request'
+import { CourseSearchReq } from '../eam_course_search'
+import { getVpnUniqueId } from '../../shared/utils/index'
 
-export interface CourseSearchReq {
-  courseName: string
-  semesterCode: string
-  page?: string
-  size?: string
-}
-
-const baseUrl = 'http://jxglstu.hfut.edu.cn'
+const baseUrl = 'https://webvpn.hfut.edu.cn/http/77726476706e69737468656265737421faef469034247d1e760e9cb8d6502720ede479'
 
 export default async function(query: IQuery<CourseSearchReq>) {
   const { courseName, semesterCode, page, size } = query.req.query
-  const { success, uniqueId } = await getUniqueId(query)
+  const { success, uniqueId } = await getVpnUniqueId(query)
   if (!success) {
     return {
       code: 403,
@@ -23,9 +17,10 @@ export default async function(query: IQuery<CourseSearchReq>) {
   }
   const { body } = await request(`${baseUrl}/eams5-student/for-std/lesson-search/semester/${semesterCode}/search/${uniqueId}`, {
     params: {
-      courseNameZhLike: courseName,
-      queryPage__: `${page || 1},${size || 20}`,
-      _: Date.now(),
+      'vpn-12-o1-jxglstu.hfut.edu.cn': '',
+      'courseNameZhLike': courseName,
+      'queryPage__': `${page || 1},${size || 20}`,
+      '_': Date.now(),
     },
   }, query)
   return {
