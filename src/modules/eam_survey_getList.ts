@@ -18,17 +18,22 @@ interface List {
 const baseUrl = 'http://jxglstu.hfut.edu.cn'
 
 export default async function(query: IQuery) {
+  let semesterId = query.req.query.semesterId
+
   let locatonPath = ''
   try {
     await request(`${baseUrl}/eams5-student/for-std/lesson-survey`, {}, query)
   } catch (error) {
     locatonPath = (error as AxiosError).response!.headers.location
   }
-  const res0 = await request(baseUrl + locatonPath, {}, query)
-  const semesterValue = parseHTML(res0.body)
+
+  if (!semesterId) {
+    const res0 = await request(baseUrl + locatonPath, {}, query)
+    semesterId = getDefaultSemesterId(res0.body)
+  }
 
   const studentId = getStudentId(locatonPath)
-  const res1 = await request(`${baseUrl}/eams5-student/for-std/lesson-survey/${semesterValue}/search/${studentId}`, {}, query)
+  const res1 = await request(`${baseUrl}/eams5-student/for-std/lesson-survey/${semesterId}/search/${studentId}`, {}, query)
 
   const surveyItems = res1.body.forStdLessonSurveySearchVms as any[]
   const list: List[] = []
@@ -61,9 +66,9 @@ export default async function(query: IQuery) {
   }
 }
 
-function parseHTML(html: string) {
+function getDefaultSemesterId(html: string) {
   const $ = load(html)
-  const optionElement = $('option[selected]')
+  const optionElement = $('option:first-child')
   return optionElement.attr('value')
 }
 
