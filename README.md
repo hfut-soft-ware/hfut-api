@@ -2,12 +2,17 @@
 
 ## 安装运行
 
+推荐 node 20
+
 ```bash
 git clone https://github.com/hfut-soft-ware/hfut-api.git
 cd hfut-api
 npm i pnpm -g
 pnpm i
-pnpm dev
+# 开发
+pnpm run dev
+# 运行
+pnpm run start
 ```
 
 ## 使用

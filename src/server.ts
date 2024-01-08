@@ -1,60 +1,53 @@
-import * as fs from 'fs'
+import fs from 'node:fs/promises'
 import { Express, Request, Response } from 'express'
 import dayjs from 'dayjs'
 import cardMiddleware from './middleware/card'
 import libraryMiddleware from './middleware/library'
 import { isLogin } from './modules/login'
 import { isVPNLogin } from './modules/vpn/login'
-// import { ModulesResponse } from './shared/types'
+import type { ServerFunction } from '@/shared/types'
 
-export function getRoute(filename: string) {
-  const parsedRoute = filename.split('_')
-  let route = `/${parsedRoute[0]}`
-  if (parsedRoute.length === 1) {
-    return route
-  }
+type ModuleType = '' | 'vpn' | 'community'
 
-  parsedRoute.splice(1).forEach((item) => {
-    route += `/${item}`
-  })
-
-  return route
-}
-
-async function getModules(vpn = false) {
+async function getModules(moduleType: ModuleType = '') {
+  const rootDir = `./src/modules/${moduleType}`
   let files: string[] = []
 
-  const rootDir = `./src/modules${vpn ? '/vpn' : ''}`
-
-  await fs.promises.readdir(rootDir).then((res) => {
-    files = res
-  }).catch((err) => {
+  try {
+    files = await fs.readdir(rootDir)
+  } catch (err) {
     console.log('An error occurred when read dir\n', err)
-  })
+  }
 
-  return files.filter(item => item.endsWith('.ts')).map((item) => {
+  return await Promise.all(files.filter(item => item.endsWith('.ts')).map(async(item) => {
     let post = false
     let filename = item.replace('.ts', '')
     if (filename.endsWith('.post')) {
       post = true
     }
-    const module = require(`./modules/${vpn ? 'vpn/' : ''}${filename}`).default
+    const module = (await import(`./modules/${moduleType}/${filename}`)).default as ServerFunction
     if (post) {
       filename = filename.replace('.post', '')
     }
-    const route = getRoute(filename)
+    const route = filename.replaceAll('_', '/')
 
-    return { module, route: `${vpn ? '/vpn' : ''}${route}`, post }
-  })
+    return { module, route: `${moduleType ? `/${moduleType}` : ''}/${route}`, post }
+  }))
 }
 
-export interface IQuery<ReqQuery = any> {
-  req: Request<any, any, any, ReqQuery>
+// export interface IQuery<ReqQuery = any> {
+//   req: Request<any, any, any, ReqQuery>
+//   res: Response
+//   cookie: string
+// }
+
+export interface IQuery<T = any> {
+  req: Request<any, any, any, T>
   res: Response
   cookie: string
 }
 
-function routerHandler(req: Request, res: Response, item: { module: any; route: string }) {
+function routerHandler(req: Request, res: Response, item: { module: ServerFunction; route: string }) {
   const cookie = req.headers.cookie as string
   const query: IQuery = {
     req,
@@ -85,7 +78,9 @@ function routerHandler(req: Request, res: Response, item: { module: any; route: 
           delete moduleResponse.cookie
         }
 
-        res.status(moduleResponse.code || moduleResponse.status).send(moduleResponse.body || moduleResponse)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        res.status(moduleResponse.code || moduleResponse?.status).send(moduleResponse?.body || moduleResponse)
         if (req.originalUrl.includes('login')) {
           req.originalUrl = req.originalUrl.slice(0, req.originalUrl.indexOf('&password'))
         }
@@ -108,7 +103,8 @@ function routerHandler(req: Request, res: Response, item: { module: any; route: 
 }
 
 async function setupRoute(app: Express) {
-  const modules = [...await getModules(), ...await getModules(true)]
+  const moduleTypes: ModuleType[] = ['', 'vpn', 'community']
+  const modules = (await Promise.all(moduleTypes.map(async item => await getModules(item)))).flat()
 
   modules.forEach((item) => {
     if (item.post) {

@@ -7,7 +7,7 @@ export default function(query: IQuery) {
   const { id } = query.req.query
   if (!id) {
     return {
-      status: 400,
+      code: 400,
       msg: '课表布局id不能为空',
     }
   }
