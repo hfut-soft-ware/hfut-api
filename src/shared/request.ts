@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios'
-import tunnel from 'tunnel'
 import { IQuery } from '../server'
-import { useThrottle } from './utils/useThrottle'
-
 import type { IAnswer } from './types'
+
+// import { useThrottle } from './utils/useThrottle'
+// import tunnel from 'tunnel'
 
 export function getCookie(cookie: string | string[]): string {
   if (!Array.isArray(cookie)) {
@@ -13,24 +13,24 @@ export function getCookie(cookie: string | string[]): string {
   return cookie[0]
 }
 
-const proxy = () => {
-  useThrottle(
-    async() => {
-      const url
-        = 'http://route.xiongmaodaili.com/xiongmao-web/api/glip?secret=02f0fd4b8aeac2e4ac952960f07d312f&orderNo=GL20220721095032iUmJG8F4&count=1&isTxt=0&proxyType=1'
-      const res = await axios.get(url)
+// const proxy = () => {
+//   useThrottle(
+//     async() => {
+//       const url
+//         = 'http://route.xiongmaodaili.com/xiongmao-web/api/glip?secret=02f0fd4b8aeac2e4ac952960f07d312f&orderNo=GL20220721095032iUmJG8F4&count=1&isTxt=0&proxyType=1'
+//       const res = await axios.get(url)
 
-      return tunnel.httpsOverHttp({
-        proxy: {
-          host: res.data.obj[0].ip,
-          port: res.data.obj[0].port,
-        },
-      })
-    },
-    4.5 * 60 * 1000,
-    true,
-  )
-}
+//       return tunnel.httpsOverHttp({
+//         proxy: {
+//           host: res.data.obj[0].ip,
+//           port: res.data.obj[0].port,
+//         },
+//       })
+//     },
+//     4.5 * 60 * 1000,
+//     true,
+//   )
+// }
 
 export function createRequest() {
   return async(

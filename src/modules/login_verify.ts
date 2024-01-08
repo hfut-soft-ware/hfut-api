@@ -67,7 +67,7 @@ export default async function(query: IQuery, getPwd = false) {
       console.log(err)
     }
 
-    const $ = cheerio.load((err as AxiosError).response?.data || '')
+    const $ = cheerio.load((err as AxiosError).response?.data as string || '')
 
     const errMsg = $('#errorpassword').text().trim()
 

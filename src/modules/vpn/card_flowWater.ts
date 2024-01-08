@@ -1,4 +1,3 @@
-import * as Buffer from 'buffer'
 import iconv from 'iconv-lite'
 import cheerio from 'cheerio'
 

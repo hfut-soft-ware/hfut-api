@@ -1,11 +1,11 @@
 import * as fs from 'fs'
 import { Express, Request, Response } from 'express'
 import dayjs from 'dayjs'
-import { ModulesResponse } from './shared/types'
 import cardMiddleware from './middleware/card'
 import libraryMiddleware from './middleware/library'
 import { isLogin } from './modules/login'
 import { isVPNLogin } from './modules/vpn/login'
+// import { ModulesResponse } from './shared/types'
 
 export function getRoute(filename: string) {
   const parsedRoute = filename.split('_')
@@ -50,7 +50,7 @@ async function getModules(vpn = false) {
 
 export interface IQuery<ReqQuery = any> {
   req: Request<any, any, any, ReqQuery>
-  res: ModulesResponse
+  res: Response
   cookie: string
 }
 
