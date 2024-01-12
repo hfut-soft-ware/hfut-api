@@ -11,7 +11,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', '.vscode', 'cloudbaserc.json', 'package.json', 'tsconfig.json'],
   'overrides': [{
     "files": ["*"],
     "rules": {
