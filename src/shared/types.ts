@@ -33,4 +33,4 @@ export interface ServerFunctionRes {
   body?: any
 }
 
-export type ServerFunction = (query: IQuery) => Promise<ServerFunctionRes>
+export type ServerFunction<T = any> = (query: IQuery<T>) => Promise<ServerFunctionRes>

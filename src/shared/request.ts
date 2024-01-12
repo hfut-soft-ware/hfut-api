@@ -88,6 +88,32 @@ export function createRequest() {
   }
 }
 
+const createCommunityRequest = () => {
+  const axiosInstance = axios.create({ baseURL: 'https://community.hfut.edu.cn' })
+
+  return async(
+    url: string,
+    options: AxiosRequestConfig,
+    query?: Partial<IQuery>,
+  ): Promise<IAnswer> => {
+    const res = await axiosInstance({
+      url,
+      ...options,
+      headers: {
+        ...options.headers,
+        'x-access-token': query?.cookie || '',
+      },
+    })
+
+    return {
+      body: res.data,
+      ...res,
+    }
+  }
+}
+
 const request = createRequest()
+
+export const communityRequest = createCommunityRequest()
 
 export default request

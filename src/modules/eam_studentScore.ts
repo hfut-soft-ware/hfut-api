@@ -43,7 +43,11 @@ function parseScore(html: string) {
   }).toArray()
 }
 
-export default async function(query: IQuery) {
+interface Query {
+  semester?: string
+}
+
+export default async function(query: IQuery<Query>) {
   const url = 'http://jxglstu.hfut.edu.cn/eams5-student/for-std/grade/sheet'
 
   const semester = query.req.query.semester || ''

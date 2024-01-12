@@ -4,21 +4,27 @@
   "description": "",
   "private": "true",
   "scripts": {
-    "dev": "tsx --watch ./main.ts",
+    "dev": "tsx watch --inspect ./main.ts",
     "start": "tsx main.ts",
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "lint": "eslint . --fix",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@antfu/eslint-config": "^0.20.2",
+    "@antfu/eslint-config": "^0.20.7",
     "@types/crypto-js": "^4.1.1",
     "@types/express": "^4.17.13",
     "@types/express-serve-static-core": "^4.17.41",
     "@types/node": "^20.10.7",
     "@types/qs": "^6.9.7",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "eslint": "^8.12.0",
     "eslint-plugin-promise": "^6.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
