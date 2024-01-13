@@ -1,4 +1,4 @@
-import request from '@/shared/request'
+import request, { communityRequest } from '@/shared/request'
 import { encryptionPwd } from '@/shared/login'
 import type { ServerFunction } from '@/shared/types'
 
@@ -76,6 +76,15 @@ const login: ServerFunction<LoginDto> = async(query) => {
     msg: 'success',
     cookie: token,
     data: { cookie: token },
+  }
+}
+
+export const isLogin = async(cookie: string) => {
+  try {
+    await communityRequest('/api/business/score/querysemesterlist', {}, { cookie })
+    return true
+  } catch (error) {
+    return false
   }
 }
 

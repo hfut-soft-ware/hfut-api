@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import cardMiddleware from './middleware/card'
 import libraryMiddleware from './middleware/library'
 import { isLogin } from './modules/login'
+import { isLogin as isCommunityLogin } from './modules/community/login'
 import { isVPNLogin } from './modules/vpn/login'
 import type { ServerFunction } from '@/shared/types'
 
@@ -35,6 +36,17 @@ async function getModules(moduleType: ModuleType = '') {
   }))
 }
 
+function getIsLoginFunction(route: string) {
+  if (route.includes('community')) {
+    return isCommunityLogin
+  }
+  if (route.includes('vpn')) {
+    return isVPNLogin
+  }
+
+  return isLogin
+}
+
 // export interface IQuery<ReqQuery = any> {
 //   req: Request<any, any, any, ReqQuery>
 //   res: Response
@@ -60,7 +72,7 @@ function routerHandler(req: Request, res: Response, item: { module: ServerFuncti
     cookieValue = cookie.slice(0, cookie.indexOf(';')).replace('wengine_vpn_ticketwebvpn_hfut_edu_cn=', '')
   }
 
-  (item.route.includes('vpn') ? isVPNLogin : isLogin)(cookie).then(async(response) => {
+  (getIsLoginFunction(item.route))(cookie).then(async(response) => {
     if (
       response || /(\/vpn)?\/(login)+(\/verify)?/.test(item.route)
     ) {
