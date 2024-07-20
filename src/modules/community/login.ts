@@ -5,7 +5,9 @@ import type { ServerFunction } from '@/shared/types'
 const loginUrl = 'https://cas.hfut.edu.cn/cas/login?service=https://community.hfut.edu.cn/mp-sso/mini-app-sso.html'
 
 interface LoginDto {
+  /** 用户名 */
   username: string
+  /** 密码 */
   password: string
 }
 

@@ -1,3 +1,6 @@
+/**
+ * 成绩排名
+ */
 import getSemesterList from './semesterList'
 import { communityRequest } from '@/shared/request'
 

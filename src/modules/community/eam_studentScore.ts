@@ -1,3 +1,6 @@
+/**
+ * 根据学期 id 获取成绩列表
+ */
 import semesterList from './semesterList'
 import { communityRequest } from '@/shared/request'
 import { Semester } from '@/shared/constant'
@@ -5,6 +8,7 @@ import { Semester } from '@/shared/constant'
 import type { ServerFunction } from '@/shared/types'
 
 interface Query {
+  /** semesterId: 例如： 214 */
   semester?: string
 }
 
@@ -15,7 +19,6 @@ const getStudentScore: ServerFunction<Query> = async(query) => {
 
   if (!semesterStr) {
     const { data } = await semesterList(query)
-    // const querysemesterlist = (body.result as { xn: string; xq: string }[]).reverse()
     const querysemesterlist = (data as { xn: string; xq: string }[]).reverse()
     querySemester.push(
       ...querysemesterlist.map(item => ({

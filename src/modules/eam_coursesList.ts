@@ -25,7 +25,7 @@ export default async function(query: IQuery) {
   const idsParams = {
     bizTypeId: query.req.query.bizTypeId || 2,
     // 每个学期记得更换一次，下次找个方法自动解决
-    semesterId: query.req.query.semesterId || 194,
+    semesterId: query.req.query.semesterId || 254,
     dataId: studentId,
   }
 

@@ -1,3 +1,6 @@
+/**
+ * 获取学期列表
+ */
 import { communityRequest } from '@/shared/request'
 
 import type { ServerFunction } from '@/shared/types'
